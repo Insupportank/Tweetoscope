@@ -228,7 +228,7 @@ public class TweetoscopeApp {
 			}
 		}
 
-		if (cmd.hasOption(filteringStrategy)) {
+		if (cmd.hasOption(filteringStrategyOption)) {
 			filteringStrategy = cmd.getOptionValue(filteringStrategyOption);
 			if (!validFilteringStrategies.contains(filteringStrategy)) {
 				System.out.println("invalid filtering strategy");
