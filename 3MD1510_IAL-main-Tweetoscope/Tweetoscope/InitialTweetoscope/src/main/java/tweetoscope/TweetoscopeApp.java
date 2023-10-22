@@ -32,6 +32,7 @@ import tweetoscope.tweetsFilter.CountryCodeTweetFilter;
 import tweetoscope.tweetsFilter.EmptyTweetFilter;
 import tweetoscope.tweetsFilter.LangTweetFilter;
 import tweetoscope.tweetsFilter.TweetFilter;
+import tweetoscope.tweetsFilter.SizeTweetFilter;
 import tweetoscope.tweetsFilter.UserAccountCreationYearTweetFilter;
 import tweetoscope.tweetsProducer.MockTwitterStreamRandom;
 import tweetoscope.tweetsProducer.MockTwitterStreamRecorded;
@@ -46,6 +47,7 @@ import tweetoscope.tweetsProducer.TwitterSampledStreamReaderSingleton;
  * @author Virginie Galtier
  *
  */
+
 public class TweetoscopeApp {
 	/* Possible Online Sources  */
 	/* !!! deprecated from April 2023 on, the "Free" access plan no longer allow to read Tweets. */
@@ -60,6 +62,7 @@ public class TweetoscopeApp {
 	private static final String FILTER_LANGUAGE = "language";   // keeps only Tweets written in a given language
 	private static final String FILTER_ACCOUNT_CREATION_YEAR = "accountCreationYear"; // deprecated since the change in access plans
 	private static final String FILTER_COUNTRY = "country"; // deprecated since the change in access plans
+	private static final String FILTER_SIZE = "size"; //keeps tweets with a minimum length
 	
 	
 	// DEFAULT CONFIGURATION:
@@ -83,6 +86,7 @@ public class TweetoscopeApp {
 
 	public TweetoscopeApp(String[] args) {
 		// reads configuration from the command line
+		
 		readProgArgs(args);
 
 		// creates the components
@@ -141,7 +145,7 @@ public class TweetoscopeApp {
 			filter = new EmptyTweetFilter();
 			break;
 		case FILTER_LANGUAGE:
-			filter = new LangTweetFilter("en");
+			filter = new LangTweetFilter("it");
 			break;
 		case FILTER_COUNTRY:
 			filter = new CountryCodeTweetFilter("us");
@@ -149,7 +153,11 @@ public class TweetoscopeApp {
 		case FILTER_ACCOUNT_CREATION_YEAR:
 			filter = new UserAccountCreationYearTweetFilter(2012);
 			break;
+		case FILTER_SIZE:
+			filter = new SizeTweetFilter(150);
+			break;
 		}
+		
 
 		// extracts hashtags from Tweet text
 		HashtagExtractor extractor = new HashtagExtractor();
@@ -183,7 +191,7 @@ public class TweetoscopeApp {
 		List<String> validTweetsSources = Arrays.asList(SCENARIO_SOURCE, RANDOM_SOURCE, RECORDED_SOURCE,
 				FILTERED_SOURCE, SAMPLED_SOURCE);
 		List<String> validFilteringStrategies = Arrays.asList(FILTER_NONE, FILTER_LANGUAGE, FILTER_COUNTRY,
-				FILTER_ACCOUNT_CREATION_YEAR);
+				FILTER_ACCOUNT_CREATION_YEAR, FILTER_SIZE);
 
 		Options options = new Options();
 
