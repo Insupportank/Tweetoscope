@@ -4,4 +4,32 @@
 \title{Tweetoscope}
 \begin{document}
 \maketitle
+\section{Architectural Choices}
+\qquad 
+In our architecture, a topic \texttt{Tweets} comes first to gather the tweets using the source file (or the API). Then, we can use a \texttt{consumer group} to filter, first of all, tweets' text. We can also gather further information such as the language in order to filter more precisely the tweets. This way, we gather the filtered tweets in a second topic that we call \texttt{FilteredTweets}. Finally, we use a service to gather the hashtags in a last topic \texttt{hashtags}. Then, we can use a counter like the \texttt{Aggregator} from the first labwork to get the number of occurences of each hashtag.
+
+\subsection{Structure of the exchanged messages (JSON formatted)}
+
+\texttt{Tweets} topic :
+\begin{itemize}
+    \item key: tweet\_id
+    \item value: the rest of the tweet content {created}
+\end{itemize}
+\\
+\textt{FilteredTweets} topic :
+\begin{itemize}
+    \item key: tweet\_id
+    \item value: text
+\end{itemize}
+\\
+\texttt{hashtags} topic :
+
+\section{Risk Analysis}
+\subsection{Initial Risk Analysis}
+\qquad Since we have 2 brokers for our 2 partitions for each topic, the crash of 1 broker would only slow down the application. if 2 of them crash at the same time for the same topic, the application is hanging and the some results could be lost during the issue.
+
+If a consumer or a producer lags or crashes, it can cause the application to lose data or to slow down.
+
+
+
 \end{document}
