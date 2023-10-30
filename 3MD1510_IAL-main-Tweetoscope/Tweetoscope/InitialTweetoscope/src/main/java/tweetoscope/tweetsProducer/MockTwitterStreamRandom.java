@@ -16,8 +16,12 @@ along with this program. If not, see <https://www.gnu.org/licenses/>
  */
 package tweetoscope.tweetsProducer;
 
+import java.util.Properties;
 import java.util.Random;
-import java.util.concurrent.Flow.Subscriber;
+
+import org.apache.kafka.clients.producer.KafkaProducer;
+import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.clients.producer.ProducerConfig;
 
 import com.twitter.clientlib.model.Tweet;
 
@@ -30,13 +34,48 @@ import com.twitter.clientlib.model.Tweet;
  *
  */
 public final class MockTwitterStreamRandom extends OfflineTweetsProducer {
+	/*
+	 * Kafka producer
+	 */
+	private KafkaProducer<Void, String> kafkaProducer;
+	/*
+	 * List of Kafka bootstrap servers. Example: localhost:9092,another.host:9092
+	 */
+	private String bootstrapServers;
+	/*
+	 * Name of the destination Kafka topic
+	 */
+	private String topicName;
 
+	/**
+	 * Creates the proxy (provoking infinite execution).
+	 * 
+	 * @param args first argument is a list of Kafka bootstrap servers, second
+	 *             argument is the name of the destination Kafka topic
+	 */
+	public static void main(String[] args) {
+		new MockTwitterStreamRandom(args[0], args[1]);
+	}
+	
 	/**
 	 * Creates a new MockTwitterStreamRandom.
 	 * 
 	 */
-	public MockTwitterStreamRandom() {
+	public MockTwitterStreamRandom(String bootstrapServers, String topicName) {
+		// Looks like useless but we keep the super
 		super();
+		
+		this.bootstrapServers = bootstrapServers;
+		this.topicName = topicName;
+		
+		try {
+			// creates the Kafka producer with the appropriate configuration
+			kafkaProducer = new KafkaProducer<Void, String>(configureKafkaProducer());
+		} catch (Exception e) {
+			System.err.println("something went wrong... " + e.getMessage());
+		} finally {
+			kafkaProducer.close();
+		}
 	}
 
 	/**
@@ -71,10 +110,10 @@ public final class MockTwitterStreamRandom extends OfflineTweetsProducer {
 			tweet.setId("" + nb);
 			tweet.setText(text);
 			tweet.setLang(languages[(int) (Math.random() * languages.length)]);
+			
 			// publishes the Tweet
-			for (Subscriber<? super Tweet> s : subscribers) {
-				s.onNext(tweet);
-			}
+			kafkaProducer.send(new ProducerRecord<Void, String>(topicName, null, tweet.toString()));
+			
 			// waits for a while
 			try {
 				Thread.sleep(10);
@@ -83,4 +122,21 @@ public final class MockTwitterStreamRandom extends OfflineTweetsProducer {
 			}
 		}
 	}
+	
+
+	/**
+	 * Prepares configuration for the Kafka producer <Void, String>
+	 * 
+	 * @return configuration properties for the Kafka producer
+	 */
+	private Properties configureKafkaProducer() {
+		Properties producerProperties = new Properties();
+		producerProperties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+		producerProperties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG,
+				"org.apache.kafka.common.serialization.VoidSerializer");
+		producerProperties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG,
+				"org.apache.kafka.common.serialization.StringSerializer");
+		return producerProperties;
+	}
+
 }

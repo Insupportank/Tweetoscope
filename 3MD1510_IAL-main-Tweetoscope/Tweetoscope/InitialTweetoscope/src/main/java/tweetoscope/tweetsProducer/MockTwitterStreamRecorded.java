@@ -20,7 +20,11 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.OffsetDateTime;
-import java.util.concurrent.Flow.Subscriber;
+import java.util.Properties;
+
+import org.apache.kafka.clients.producer.KafkaProducer;
+import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.clients.producer.ProducerConfig;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -39,19 +43,53 @@ import com.twitter.clientlib.model.Tweet;
  *
  */
 public final class MockTwitterStreamRecorded extends OfflineTweetsProducer {
-
 	/**
 	 * File that holds the recorded Tweets
 	 */
 	protected String fileName;
+	/*
+	 * Kafka producer
+	 */
+	private KafkaProducer<Void, String> kafkaProducer;
+	/*
+	 * List of Kafka bootstrap servers. Example: localhost:9092,another.host:9092
+	 */
+	private String bootstrapServers;
+	/*
+	 * Name of the destination Kafka topic
+	 */
+	private String topicName;
+
+	/**
+	 * Creates the proxy (provoking infinite execution).
+	 * 
+	 * @param args first argument is a list of Kafka bootstrap servers, second
+	 *             argument is the name of the destination Kafka topic
+	 */
+	public static void main(String[] args) {
+		new MockTwitterStreamRecorded(args[0], args[1], args[2]);
+	}
+
 
 	/**
 	 * Creates a MockTwitterStreamRecorded.
 	 */
-	public MockTwitterStreamRecorded(String fileName) {
+	public MockTwitterStreamRecorded(String fileName, String bootstrapServers, String topicName) {
+		// Looks like useless but we keep the super
 		super();
-
+		
 		this.fileName = fileName;
+		this.bootstrapServers = bootstrapServers;
+		this.topicName = topicName;
+		
+		try {
+			// creates the Kafka producer with the appropriate configuration
+			kafkaProducer = new KafkaProducer<Void, String>(configureKafkaProducer());
+		} catch (Exception e) {
+			System.err.println("something went wrong... " + e.getMessage());
+		} finally {
+			kafkaProducer.close();
+		}
 	}
 
 	/**
@@ -69,13 +107,26 @@ public final class MockTwitterStreamRecorded extends OfflineTweetsProducer {
 			JsonArray prerecordedtweets = jsonObject.getAsJsonArray("tweets");
 			for (JsonElement je : prerecordedtweets) {
 				Tweet tweet = gson.fromJson(je, Tweet.class);
-				for (Subscriber<? super Tweet> s : subscribers) {
-					s.onNext(tweet);
-				}
+				kafkaProducer.send(new ProducerRecord<Void, String>(topicName, null, tweet.toString()));
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	/**
+	 * Prepares configuration for the Kafka producer <Void, String>
+	 * 
+	 * @return configuration properties for the Kafka producer
+	 */
+	private Properties configureKafkaProducer() {
+		Properties producerProperties = new Properties();
+		producerProperties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+		producerProperties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG,
+				"org.apache.kafka.common.serialization.VoidSerializer");
+		producerProperties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG,
+				"org.apache.kafka.common.serialization.StringSerializer");
+		return producerProperties;
 	}
 }

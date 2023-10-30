@@ -18,7 +18,12 @@ package tweetoscope.tweetsProducer;
 
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
-import java.util.concurrent.Flow.Subscriber;
+import java.util.Properties;
+
+import org.apache.kafka.clients.producer.KafkaProducer;
+import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.clients.producer.ProducerConfig;
+
 
 import com.twitter.clientlib.model.Tweet;
 
@@ -31,13 +36,48 @@ import com.twitter.clientlib.model.Tweet;
  *
  */
 public final class MockTwitterStreamScenario extends OfflineTweetsProducer {
+	/*
+	 * Kafka producer
+	 */
+	private KafkaProducer<Void, String> kafkaProducer;
+	/*
+	 * List of Kafka bootstrap servers. Example: localhost:9092,another.host:9092
+	 */
+	private String bootstrapServers;
+	/*
+	 * Name of the destination Kafka topic
+	 */
+	private String topicName;
 
 	/**
-	 * Creates a MockTwitterStreamScenario.
+	 * Creates the proxy (provoking infinite execution).
+	 * 
+	 * @param args first argument is a list of Kafka bootstrap servers, second
+	 *             argument is the name of the destination Kafka topic
+	 */
+	public static void main(String[] args) {
+		new MockTwitterStreamScenario(args[0], args[1]);
+	}
+	
+	/**
+	 * Creates a new MockTwitterStreamScenario.
 	 * 
 	 */
-	public MockTwitterStreamScenario() {
+	public MockTwitterStreamScenario(String bootstrapServers, String topicName) {
+		// Looks like useless but we keep the super
 		super();
+		
+		this.bootstrapServers = bootstrapServers;
+		this.topicName = topicName;
+		
+		try {
+			// creates the Kafka producer with the appropriate configuration
+			kafkaProducer = new KafkaProducer<Void, String>(configureKafkaProducer());
+		} catch (Exception e) {
+			System.err.println("something went wrong... " + e.getMessage());
+		} finally {
+			kafkaProducer.close();
+		}
 	}
 
 	/**
@@ -137,10 +177,23 @@ public final class MockTwitterStreamScenario extends OfflineTweetsProducer {
 		tweets[9].getGeo();
 		tweets[9].setLang("en");
 
-		for (int i = 0; i < tweets.length; i++) {
-			for (Subscriber<? super Tweet> s : subscribers) {
-				s.onNext(tweets[i]);
-			}
+		for (Tweet tweet : tweets) { // We changed the loop for performance enhancing
+			kafkaProducer.send(new ProducerRecord<Void, String>(topicName, null, tweet.toString()));
 		}
+	}
+	
+	/**
+	 * Prepares configuration for the Kafka producer <Void, String>
+	 * 
+	 * @return configuration properties for the Kafka producer
+	 */
+	private Properties configureKafkaProducer() {
+		Properties producerProperties = new Properties();
+		producerProperties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+		producerProperties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG,
+				"org.apache.kafka.common.serialization.VoidSerializer");
+		producerProperties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG,
+				"org.apache.kafka.common.serialization.StringSerializer");
+		return producerProperties;
 	}
 }
