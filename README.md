@@ -27,3 +27,7 @@ git stash pop
 - [ ] Open run configuration and add in the arguments tab: `-s {random|scenario} -f {none|language|size} -n {int}`
 - [ ] Open a terminal `bash run_kafka.bash` to launch Zookeeper and the brokers. It also creates the topics we need : 'tweets', 'filteredTweets' and 'Hashtags'.
 - [ ] Right click on `src/main/java/tweetoscope/TweetoscopeApp.java` and run as java application
+
+## Build and run
+- [ ] Build the pom.xml `mvn -f 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/pom.xml clean package`
+- [ ] Run the .jar file(s) created `java -jar 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/target/{file} arg1 arg2`
