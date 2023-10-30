@@ -87,6 +87,37 @@
 						</configuration>
 					</execution>
 					
+					<execution>
+						<id>tweetproducerScenario</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+						<configuration>
+							<finalName>tweet_producer_scenario</finalName>
+							<archive>
+								<manifest>
+									<mainClass>tweetoscope.tweetsProducer.MockTwitterStreamScenario</mainClass>
+								</manifest>
+							</archive>
+						</configuration>
+					</execution>
+					
+					<execution>
+						<id>tweetproducerRecorded</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+						<configuration>
+							<finalName>tweet_producer_recorded</finalName>
+							<archive>
+								<manifest>
+									<mainClass>tweetoscope.tweetsProducer.MockTwitterStreamRecorded</mainClass>
+								</manifest>
+							</archive>
+						</configuration>
+					</execution>
 				</executions>
 			</plugin>
 		</plugins>

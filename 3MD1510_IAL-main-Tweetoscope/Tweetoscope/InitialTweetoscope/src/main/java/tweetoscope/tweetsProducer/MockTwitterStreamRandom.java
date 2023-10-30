@@ -71,11 +71,13 @@ public final class MockTwitterStreamRandom extends OfflineTweetsProducer {
 		try {
 			// creates the Kafka producer with the appropriate configuration
 			kafkaProducer = new KafkaProducer<Void, String>(configureKafkaProducer());
+			run();
 		} catch (Exception e) {
 			System.err.println("something went wrong... " + e.getMessage());
 		} finally {
 			kafkaProducer.close();
 		}
+		
 	}
 
 	/**
