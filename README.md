@@ -31,3 +31,4 @@ git stash pop
 ## Build and run
 - [ ] Build the pom.xml `mvn -f 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/pom.xml clean package`
 - [ ] Run the .jar file(s) created `java -jar 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/target/tweet_producer_random-jar-with-dependencies.jar localhost:9092,localhost:9093 tweets_test`
+- [ ] If you run the recorded producer, you need the tweet .txt path : `java -jar 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/target/tweet_producer_recorded-jar-with-dependencies.jar 3MD1510_IAL-main-Tweetoscope/Tweetoscope/TestBases/miniTestBase.txt localhost:9092,localhost:9093 tweets_test`
