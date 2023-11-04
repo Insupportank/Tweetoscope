@@ -2,7 +2,7 @@ package tweetoscope.tweetsFilter;
 
 import com.twitter.clientlib.model.Tweet;
 
-public class SizeTweetFilter2 extends TweetFilter {
+public class SizeTweetFilter2 extends TweetFilter2 {
 
 	/**
 	 * target language to match (examples: "fr", "en"...)
@@ -15,13 +15,19 @@ public class SizeTweetFilter2 extends TweetFilter {
 	 * 
 	 * @param language target language to match (example: "en")
 	 */
-	public SizeTweetFilter2(int n) {
+	public static void main(String[] args) {
+		new SizeTweetFilter2(args[0], args[1], args[2], Integer.parseInt(args[3]));
+	}
+	
+	public SizeTweetFilter2(String bootstrapServers, String inputTopicName, String outputTopicName, int n) {
+		super(bootstrapServers, inputTopicName, outputTopicName);
 		this.n = n;
+		this.run();
 	}
 
 	@Override
-	protected boolean match(Tweet tweet) {
-		return tweet.getText().length() >= n;
+	protected boolean match(String tweet) {
+		return tweet.length() >= n;
 	}
 
 }

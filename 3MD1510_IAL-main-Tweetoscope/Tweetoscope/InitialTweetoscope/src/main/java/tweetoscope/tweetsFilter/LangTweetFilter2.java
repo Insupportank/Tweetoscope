@@ -18,13 +18,15 @@ package tweetoscope.tweetsFilter;
 
 import com.twitter.clientlib.model.Tweet;
 
+import tweetoscope.tweetsProducer.MockTwitterStreamRecorded;
+
 /**
  * Filters Tweets according to the detected language.
  * 
  * @author Virginie Galtier
  *
  */
-public class LangTweetFilter2 extends TweetFilter {
+public class LangTweetFilter2 extends TweetFilter2 {
 
 	/**
 	 * target language to match (examples: "fr", "en"...)
@@ -37,13 +39,19 @@ public class LangTweetFilter2 extends TweetFilter {
 	 * 
 	 * @param language target language to match (example: "en")
 	 */
-	public LangTweetFilter2(String language) {
+	public static void main(String[] args) {
+		new LangTweetFilter2(args[0], args[1], args[2], args[3]);
+	}
+	
+	public LangTweetFilter2(String bootstrapServers, String inputTopicName, String outputTopicName, String language) {
+		super(bootstrapServers, inputTopicName, outputTopicName);
 		this.language = language;
+		this.run();
 	}
 
 	@Override
-	protected boolean match(Tweet tweet) {
-		return tweet.getLang().equals(language);
+	protected boolean match(String tweet) {
+		return tweet.equals(language);
 	}
 
 }

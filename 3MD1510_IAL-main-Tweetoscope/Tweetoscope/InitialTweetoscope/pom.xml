@@ -118,6 +118,55 @@
 							</archive>
 						</configuration>
 					</execution>
+					
+					<execution>
+						<id>SizeTweetFilter</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+						<configuration>
+							<finalName>SizeTweetFilter</finalName>
+							<archive>
+								<manifest>
+									<mainClass>tweetoscope.tweetsFilter.SizeTweetFilter2</mainClass>
+								</manifest>
+							</archive>
+						</configuration>
+					</execution>
+					
+					<execution>
+						<id>EmptyTweetFilter</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+						<configuration>
+							<finalName>EmptyTweetFilter</finalName>
+							<archive>
+								<manifest>
+									<mainClass>tweetoscope.tweetsFilter.EmptyTweetFilter2</mainClass>
+								</manifest>
+							</archive>
+						</configuration>
+					</execution>
+					
+					<execution>
+						<id>LangTweetFilter</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+						<configuration>
+							<finalName>LangTweetFilter</finalName>
+							<archive>
+								<manifest>
+									<mainClass>tweetoscope.tweetsFilter.LangTweetFilter2</mainClass>
+								</manifest>
+							</archive>
+						</configuration>
+					</execution>
+					
 				</executions>
 			</plugin>
 		</plugins>
