@@ -21,6 +21,19 @@ import java.util.List;
 import java.util.concurrent.Flow.Publisher;
 import java.util.concurrent.Flow.Subscriber;
 import java.util.concurrent.Flow.Subscription;
+import java.util.Properties;
+
+import org.apache.kafka.clients.consumer.ConsumerConfig;
+import org.apache.kafka.common.serialization.Serdes;
+import org.apache.kafka.streams.KafkaStreams;
+import org.apache.kafka.streams.StreamsBuilder;
+import org.apache.kafka.streams.StreamsConfig;
+import org.apache.kafka.streams.Topology;
+import org.apache.kafka.streams.kstream.KStream;
+import org.apache.kafka.streams.kstream.Predicate;
+import org.apache.kafka.streams.kstream.ValueTransformer;
+import org.apache.kafka.streams.kstream.ValueTransformerSupplier;
+import org.apache.kafka.streams.processor.ProcessorContext;
 
 import com.twitter.clientlib.model.Tweet;
 
@@ -35,57 +48,122 @@ import com.twitter.clientlib.model.Tweet;
  * @author Virginie Galtier
  *
  */
-public abstract class TweetFilter2 implements Subscriber<Tweet>, Publisher<Tweet> {
+public abstract class TweetFilter2 {
 
-	/**
-	 * List of objects to notify when a new Tweet passes the filter (downstream
-	 * component = HashtagExtractor)
-	 */
-	protected List<Subscriber<? super Tweet>> subscribers;
-
-	/**
-	 * Creates a new Tweet filter
-	 */
-	public TweetFilter2() {
-		subscribers = new ArrayList<Subscriber<? super Tweet>>();
-	}
-
-	/**
-	 * Tests the filter conditions
+	/*
+	 * List of Kafka bootstrap servers. Example: localhost:9092,another.host:9092
 	 * 
-	 * @param tweet Tweet to examine
-	 * @return true if the Tweet complies with the filter, false if it doesn't match
-	 *         the filter conditions
+	 * @see:
+	 * https://jaceklaskowski.gitbooks.io/apache-kafka/content/kafka-properties-
+	 * bootstrap-servers.html
 	 */
-	protected abstract boolean match(Tweet tweet);
+	private String bootstrapServers;
+	/*
+	 * Name of the source Kafka topic
+	 */
+	private String inputTopicName;
+	/*
+	 * Name of the destination Kafka topic
+	 */
+	private String outputTopicName;
 
-	@Override
-	public void subscribe(Subscriber<? super Tweet> subscriber) {
-		subscribers.add(subscriber);
+	/**
+	 * Creates a filter element (provoking infinite execution).
+	 * 
+	 * @param arg first argument is a list of Kafka bootstrap servers, second
+	 *            argument is the name of the source Kafka topic, third argument is
+	 *            the name of the destination Kafka topic
+	 */
+	protected abstract boolean match(String tweet);
+	/**
+	 * Creates a Kafka consumer and a Kafka producer, the consumer reads a wikimedia
+	 * change event from a Kafka topic the locale of the event is extracted the
+	 * producer publishes the region (until the filter element is interrupted).
+	 * 
+	 * @param bootstrapServers   list of Kafka bootstrap servers. Example:
+	 *                           localhost:9092,another.host:9092
+	 * @param inputTopicName name of the source Kafka topic
+	 * @param outputTopicName    name of the destination Kafka topic
+	 */
+	TweetFilter2(String bootstrapServers, String inputTopicName, String outputTopicName) {
+		this.bootstrapServers = bootstrapServers;
+		this.inputTopicName = inputTopicName;
+		this.outputTopicName = outputTopicName;
+
+		Topology tweetsTopology = createTweetsTopology();
+		KafkaStreams tweetStream = new KafkaStreams(tweetsTopology,
+				configureTweetStream());
+		tweetStream.start();
 	}
 
-	@Override
-	public void onNext(Tweet tweet) {
-		if (match(tweet)) {
-			// Notify the subscribers of the non-filtered out Tweet
-			for (Subscriber<? super Tweet> s : subscribers) {
-				s.onNext(tweet);
+	/**
+	 * Prepares configuration for the Kafka stream
+	 * 
+	 * @return configuration properties for the Kafka stream
+	 */
+	private Properties configureTweetStream() {
+		Properties properties = new Properties();
+		properties.put(StreamsConfig.APPLICATION_ID_CONFIG, "wikipediaRegion");
+		properties.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+		// The semantics of caching is that data is flushed to the state store and
+		// forwarded to the next downstream processor node
+		// whenever the earliest of
+		// commit.interval.ms or cache.max.bytes.buffering (cache pressure) hits.
+		properties.put(StreamsConfig.CACHE_MAX_BYTES_BUFFERING_CONFIG, 0);
+		properties.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.Void().getClass().getName());
+		properties.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
+		properties.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+		return properties;
+	}
+
+	private Topology createTweetsTopology() {
+		StreamsBuilder streamsBuilder = new StreamsBuilder();
+
+		KStream<Void, String> wikimediaStream = streamsBuilder.stream(inputTopicName);
+
+		// Filters out Wikipedia events
+		// ----------------------------
+		Predicate<Void, String> predicateWikipediaOnly = new Predicate<Void, String>() {
+			public boolean test(Void key, String value) {
+				Gson gson = new Gson();
+				JsonObject jsonObject = gson.fromJson(value, JsonObject.class);
+				JsonObject jsonObjectMeta = jsonObject.getAsJsonObject("meta");
+				String domain = jsonObjectMeta.getAsJsonPrimitive("domain").getAsString();
+				return domain.contains("wikipedia");
 			}
-		}
-	}
+		};
+		KStream wikipediaStream = wikimediaStream.filter(predicateWikipediaOnly);
 
-	@Override
-	public void onSubscribe(Subscription subscription) {
-		// TODO Auto-generated method stub
-	}
+		// Keeps only the locale part of the 'domain' field
+		// -------------------------------------------------
+		ValueTransformerSupplier<String, String> valueTransformerKeepOnlyLocale = new ValueTransformerSupplier<String, String>() {
+			public ValueTransformer<String, String> get() {
+				return new ValueTransformer<String, String>() {
+					public void init(ProcessorContext context) {
+						// TODO Auto-generated method stub
+					}
 
-	@Override
-	public void onError(Throwable throwable) {
-		// TODO Auto-generated method stub
-	}
+					public String transform(String value) {
+						Gson gson = new Gson();
+						JsonObject jsonObject = gson.fromJson(value, JsonObject.class);
+						JsonObject jsonObjectMeta = jsonObject.getAsJsonObject("meta");
+						String domain = jsonObjectMeta.getAsJsonPrimitive("domain").getAsString();
+						// domain = en.wikipedia.org
+						return domain.split("\\.")[0]; // '.' is a special character in Java regex, must be escaped
+					}
 
-	@Override
-	public void onComplete() {
-		// TODO Auto-generated method stub
+					public void close() {
+						// TODO Auto-generated method stub
+					}
+				};
+			}
+		};
+		KStream<Void, String> regionStream = wikipediaStream.transformValues(valueTransformerKeepOnlyLocale);
+
+		// Outputs to the appropriate Kafka topic
+		// --------------------------------------
+		regionStream.to(outputTopicName);
+
+		return streamsBuilder.build();
 	}
 }
