@@ -40,7 +40,7 @@ public class EmptyTweetFilter2 extends TweetFilter2 {
 	
 
 	@Override
-	protected boolean match(String tweet) {
+	protected boolean match(Tweet tweet) {
 		return true;
 	}
 }

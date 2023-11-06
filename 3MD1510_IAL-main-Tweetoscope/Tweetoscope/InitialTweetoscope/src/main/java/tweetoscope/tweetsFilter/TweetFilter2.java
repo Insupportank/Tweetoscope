@@ -26,7 +26,9 @@ import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.Topology;
 import org.apache.kafka.streams.kstream.KStream;
 import org.apache.kafka.streams.kstream.Predicate;
-
+import com.twitter.clientlib.model.Tweet;
+import tweetoscope.serialization.TweetDeserializer;
+import tweetoscope.serialization.TweetSerializer;
 /**
  * Reacts to the reception of a new Tweet, if the Tweet matches the filter
  * condition, downstream subscribers are notified, otherwise the process is
@@ -64,7 +66,7 @@ public abstract class TweetFilter2 {
 	 *            argument is the name of the source Kafka topic, third argument is
 	 *            the name of the destination Kafka topic
 	 */
-	protected abstract boolean match(String tweet);
+	protected abstract boolean match(Tweet tweet);
 	/**
 	 * Creates a Kafka consumer and a Kafka producer, the consumer reads a wikimedia
 	 * change event from a Kafka topic the locale of the event is extracted the
@@ -102,7 +104,7 @@ public abstract class TweetFilter2 {
 		// commit.interval.ms or cache.max.bytes.buffering (cache pressure) hits.
 		properties.put(StreamsConfig.CACHE_MAX_BYTES_BUFFERING_CONFIG, 0);
 		properties.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.Void().getClass().getName());
-		properties.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
+		properties.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.serdeFrom(new TweetSerializer(),new TweetDeserializer()).getClass());
 		properties.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
 		return properties;
 	}
@@ -110,12 +112,12 @@ public abstract class TweetFilter2 {
 	protected Topology createTweetsTopology() {
 		StreamsBuilder streamsBuilder = new StreamsBuilder();
 
-		KStream<Void, String> inputStream = streamsBuilder.stream(inputTopicName);
+		KStream<Void, Tweet> inputStream = streamsBuilder.stream(inputTopicName);
 
 		// Filters out Wikipedia events
 		// ----------------------------
-		Predicate<Void, String> filter = new Predicate<Void, String>() {
-			public boolean test(Void key, String value) {
+		Predicate<Void, Tweet> filter = new Predicate<Void, Tweet>() {
+			public boolean test(Void key, Tweet value) {
 				return match(value);
 			}
 		};

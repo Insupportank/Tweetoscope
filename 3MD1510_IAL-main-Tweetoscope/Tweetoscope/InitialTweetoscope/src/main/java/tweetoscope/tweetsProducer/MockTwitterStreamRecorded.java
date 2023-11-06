@@ -33,6 +33,8 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.twitter.clientlib.model.Tweet;
+import tweetoscope.serialization.TweetDeserializer;
+import tweetoscope.serialization.TweetSerializer;
 
 /**
  * Mimics the TwitterStreamSampleReaderSingleton class. To be used when the
@@ -50,7 +52,7 @@ public final class MockTwitterStreamRecorded extends OfflineTweetsProducer {
 	/*
 	 * Kafka producer
 	 */
-	private KafkaProducer<Void, String> kafkaProducer;
+	private KafkaProducer<Void, Tweet> kafkaProducer;
 	/*
 	 * List of Kafka bootstrap servers. Example: localhost:9092,another.host:9092
 	 */
@@ -84,7 +86,7 @@ public final class MockTwitterStreamRecorded extends OfflineTweetsProducer {
 		
 		try {
 			// creates the Kafka producer with the appropriate configuration
-			kafkaProducer = new KafkaProducer<Void, String>(configureKafkaProducer());
+			kafkaProducer = new KafkaProducer<Void, Tweet>(configureKafkaProducer());
 			run();
 		} catch (Exception e) {
 			System.err.println("something went wrong... " + e.getMessage());
@@ -108,7 +110,7 @@ public final class MockTwitterStreamRecorded extends OfflineTweetsProducer {
 			JsonArray prerecordedtweets = jsonObject.getAsJsonArray("tweets");
 			for (JsonElement je : prerecordedtweets) {
 				Tweet tweet = gson.fromJson(je, Tweet.class);
-				kafkaProducer.send(new ProducerRecord<Void, String>(topicName, null, tweet.toString()));
+				kafkaProducer.send(new ProducerRecord<Void, Tweet>(topicName, null, tweet));
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -127,7 +129,7 @@ public final class MockTwitterStreamRecorded extends OfflineTweetsProducer {
 		producerProperties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG,
 				"org.apache.kafka.common.serialization.VoidSerializer");
 		producerProperties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG,
-				"org.apache.kafka.common.serialization.StringSerializer");
+				TweetSerializer.class);
 		return producerProperties;
 	}
 }

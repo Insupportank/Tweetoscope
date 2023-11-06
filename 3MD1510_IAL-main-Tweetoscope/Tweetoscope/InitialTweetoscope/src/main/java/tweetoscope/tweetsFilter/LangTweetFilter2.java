@@ -50,8 +50,8 @@ public class LangTweetFilter2 extends TweetFilter2 {
 	}
 
 	@Override
-	protected boolean match(String tweet) {
-		return tweet.equals(language);
+	protected boolean match(Tweet tweet) {
+		return tweet.getLang().equals(language);
 	}
 
 }
