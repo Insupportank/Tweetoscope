@@ -29,6 +29,7 @@ import org.apache.kafka.streams.kstream.Predicate;
 import com.twitter.clientlib.model.Tweet;
 import tweetoscope.serialization.TweetDeserializer;
 import tweetoscope.serialization.TweetSerializer;
+import tweetoscope.serialization.TweetSerdes;
 /**
  * Reacts to the reception of a new Tweet, if the Tweet matches the filter
  * condition, downstream subscribers are notified, otherwise the process is
@@ -104,7 +105,7 @@ public abstract class TweetFilter2 {
 		// commit.interval.ms or cache.max.bytes.buffering (cache pressure) hits.
 		properties.put(StreamsConfig.CACHE_MAX_BYTES_BUFFERING_CONFIG, 0);
 		properties.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.Void().getClass().getName());
-		properties.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.serdeFrom(new TweetSerializer(),new TweetDeserializer()).getClass());
+		properties.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, TweetSerdes.Tweet().getClass().getName());
 		properties.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
 		return properties;
 	}
