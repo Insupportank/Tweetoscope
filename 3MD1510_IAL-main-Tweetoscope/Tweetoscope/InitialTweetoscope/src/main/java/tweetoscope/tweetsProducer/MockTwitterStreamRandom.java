@@ -24,7 +24,7 @@ import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.ProducerConfig;
 
 import com.twitter.clientlib.model.Tweet;
-
+import tweetoscope.serialization.TweetSerializer;
 /**
  * Mimics the TwitterStreamSampleReaderSingleton class. To be used when the
  * Twitter sampled stream rate limit is exceeded for instance. Creates a
@@ -37,7 +37,7 @@ public final class MockTwitterStreamRandom extends OfflineTweetsProducer {
 	/*
 	 * Kafka producer
 	 */
-	private KafkaProducer<Void, String> kafkaProducer;
+	private KafkaProducer<Void, Tweet> kafkaProducer;
 	/*
 	 * List of Kafka bootstrap servers. Example: localhost:9092,another.host:9092
 	 */
@@ -70,7 +70,7 @@ public final class MockTwitterStreamRandom extends OfflineTweetsProducer {
 		
 		try {
 			// creates the Kafka producer with the appropriate configuration
-			kafkaProducer = new KafkaProducer<Void, String>(configureKafkaProducer());
+			kafkaProducer = new KafkaProducer<Void, Tweet>(configureKafkaProducer());
 			run();
 		} catch (Exception e) {
 			System.err.println("something went wrong... " + e.getMessage());
@@ -114,7 +114,7 @@ public final class MockTwitterStreamRandom extends OfflineTweetsProducer {
 			tweet.setLang(languages[(int) (Math.random() * languages.length)]);
 			
 			// publishes the Tweet
-			kafkaProducer.send(new ProducerRecord<Void, String>(topicName, null, tweet.toString()));
+			kafkaProducer.send(new ProducerRecord<Void, Tweet>(topicName, null, tweet));
 			
 			// waits for a while
 			try {
@@ -137,7 +137,7 @@ public final class MockTwitterStreamRandom extends OfflineTweetsProducer {
 		producerProperties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG,
 				"org.apache.kafka.common.serialization.VoidSerializer");
 		producerProperties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG,
-				"org.apache.kafka.common.serialization.StringSerializer");
+				TweetSerializer.class);
 		return producerProperties;
 	}
 
