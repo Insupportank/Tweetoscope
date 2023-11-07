@@ -152,22 +152,6 @@
 					</execution>
 					
 					<execution>
-						<id>EmptyTweetFilterBis</id>
-						<phase>package</phase>
-						<goals>
-							<goal>single</goal>
-						</goals>
-						<configuration>
-							<finalName>EmptyTweetFilterBis</finalName>
-							<archive>
-								<manifest>
-									<mainClass>tweetoscope.tweetsFilter.EmptyTweetFilter3</mainClass>
-								</manifest>
-							</archive>
-						</configuration>
-					</execution>
-					
-					<execution>
 						<id>LangTweetFilter</id>
 						<phase>package</phase>
 						<goals>

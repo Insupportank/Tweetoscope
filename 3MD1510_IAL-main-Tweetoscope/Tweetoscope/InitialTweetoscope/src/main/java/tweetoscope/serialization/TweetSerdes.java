@@ -1,16 +1,24 @@
 package tweetoscope.serialization;
-import tweetoscope.serialization.TweetSerializer;
-import tweetoscope.serialization.TweetDeserializer;
+
 import org.apache.kafka.common.serialization.Serde;
-import org.apache.kafka.common.serialization.Serdes;
+import org.apache.kafka.common.serialization.Serializer;
+import org.apache.kafka.common.serialization.Deserializer;
 import com.twitter.clientlib.model.Tweet;
-public class TweetSerdes {
-	private TweetSerdes() {}
+
+public class TweetSerdes implements Serde<Tweet>{
+	private TweetSerializer serializer;
+	private TweetDeserializer deserializer;
+	public TweetSerdes() {
+		this.serializer = new TweetSerializer();
+		this.deserializer = new TweetDeserializer();
+	}
+	@Override
+	public Serializer<Tweet> serializer(){
+		return serializer;
+	}
 	
-	public static Serde<Tweet> Tweet(){
-		TweetSerializer serializer = new TweetSerializer();
-		TweetDeserializer deserializer = new TweetDeserializer();
-		return Serdes.serdeFrom(serializer, deserializer);
-		
+	@Override
+	public Deserializer<Tweet> deserializer(){
+		return deserializer;
 	}
 }

@@ -105,7 +105,7 @@ public abstract class TweetFilter2 {
 		// commit.interval.ms or cache.max.bytes.buffering (cache pressure) hits.
 		properties.put(StreamsConfig.CACHE_MAX_BYTES_BUFFERING_CONFIG, 0);
 		properties.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.Void().getClass().getName());
-		properties.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, TweetSerdes.Tweet().getClass().getName());
+		properties.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, TweetSerdes.class);
 		properties.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
 		return properties;
 	}
