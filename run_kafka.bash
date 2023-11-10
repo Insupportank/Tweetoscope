@@ -13,3 +13,4 @@ xfce4-terminal --default-working-directory=$WORKING_DIR \
 --tab --title=TweetsProducer --hold --command="/bin/bash -c 'sleep 8s ; $KAFKA_HOME/bin/kafka-console-producer.sh --topic tweets --broker-list localhost:9092,localhost:9093 ; /bin/bash'" \
 --tab --title=TweetsConsumer --hold --command="/bin/bash -c 'sleep 8s ; $KAFKA_HOME/bin/kafka-console-consumer.sh --bootstrap-server localhost:9092,localhost:9093 --topic tweets --from-beginning ; /bin/bash'" \
 --tab --title=FilteredTweetsConsumer --hold --command="/bin/bash -c 'sleep 8s ; $KAFKA_HOME/bin/kafka-console-consumer.sh --bootstrap-server localhost:9092,localhost:9093 --topic filtered_tweet --from-beginning ; /bin/bash'" \
+--tab --title=HashtagsConsumer --hold --command="/bin/bash -c 'sleep 8s ; $KAFKA_HOME/bin/kafka-console-consumer.sh --bootstrap-server localhost:9092,localhost:9093 --topic hashtags --from-beginning ; /bin/bash'" \

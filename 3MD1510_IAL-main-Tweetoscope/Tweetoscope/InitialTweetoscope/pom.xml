@@ -167,6 +167,22 @@
 						</configuration>
 					</execution>
 					
+					<execution>
+						<id>HashtagExtractor</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+						<configuration>
+							<finalName>HashtagExtractor</finalName>
+							<archive>
+								<manifest>
+									<mainClass>tweetoscope.HashtagExtractor2</mainClass>
+								</manifest>
+							</archive>
+						</configuration>
+					</execution>
+					
 				</executions>
 			</plugin>
 		</plugins>
