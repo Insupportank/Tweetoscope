@@ -16,16 +16,28 @@ along with this program. If not, see <https://www.gnu.org/licenses/>
  */
 package tweetoscope;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.concurrent.Flow.Publisher;
 import java.util.concurrent.Flow.Subscriber;
 import java.util.concurrent.Flow.Subscription;
 import java.util.stream.Collectors;
 
+import org.apache.kafka.clients.consumer.ConsumerConfig;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.apache.kafka.clients.consumer.ConsumerRecords;
+import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.apache.kafka.clients.producer.ProducerConfig;
+import org.apache.kafka.clients.producer.ProducerRecord;
+
+import com.twitter.clientlib.model.Tweet;
+
+import tweetoscope.serialization.TweetDeserializer;
 /**
  * 
  * Reacts to the reception of a new hashtag by updating how many times it has
@@ -40,13 +52,7 @@ import java.util.stream.Collectors;
  * @author Virginie Galtier
  *
  */
-public class HashtagCounter2 implements Subscriber<String>, Publisher<Map<String, Integer>> {
-	/**
-	 * List of objects to notify when the map is updated (downstream component =
-	 * Visualizor)
-	 */
-	protected List<Subscriber<? super Map<String, Integer>>> subscribers;
-
+public class HashtagCounter2 {
 	/**
 	 * Number of lines to include on the leader board
 	 */
@@ -67,62 +73,59 @@ public class HashtagCounter2 implements Subscriber<String>, Publisher<Map<String
 	 * 
 	 * @param nbLeaders number of hashtags to include on the leader board
 	 */
-	public HashtagCounter2(int nbLeader) {
+	public HashtagCounter2(int nbLeader, String bootstrapServers, String inputTopicName) {
 		this.nbLeaders = nbLeader;
+		KafkaConsumer<Void, String> consumer = new KafkaConsumer<Void, String>(
+				configureKafkaConsumer(bootstrapServers));
+		consumer.subscribe(Collections.singletonList(inputTopicName));
 		hashtagOccurrenceMap = new HashMap<String, Integer>();
+		
+		try {
+			Duration timeout = Duration.ofMillis(1000);
+			while (true) {
+				// reads events
+				ConsumerRecords<Void, String> hashtags = consumer.poll(timeout);
+				for (ConsumerRecord<Void, String> hashtagObj : hashtags) {
+					String hashtag = hashtagObj.value();
+					String key = "#" + hashtag;
+					if (hashtagOccurrenceMap.containsKey(key)) {
+						hashtagOccurrenceMap.replace(key, 1 + hashtagOccurrenceMap.get(key));
+					} else {
+						hashtagOccurrenceMap.put(key, 1);
+					}
 
-		subscribers = new ArrayList<Subscriber<? super Map<String, Integer>>>();
-	}
+					// sorts by number of occurrences and keeps only the top ones
+					Map<String, Integer> topHashtagsMap = hashtagOccurrenceMap.entrySet().stream()
+							.sorted(Collections.reverseOrder(Map.Entry.comparingByValue())).limit(nbLeaders)
+							.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+					
+					if (previousLeaderMap == null || !previousLeaderMap.equals(topHashtagsMap)) {
+						
+						
+						previousLeaderMap = topHashtagsMap;
+					}
 
-	public void subscribe(Subscriber<? super Map<String, Integer>> subscriber) {
-		subscribers.add(subscriber);
-	}
-
-	/**
-	 * Triggered by the reception of a new hashtag from a TweetFilter via Java Flow.
-	 */
-	public void onNext(String hashtag) {
-		synchronized (hashtagOccurrenceMap) {
-			// avoid ConcurrentModificationException when multiple sources are used
-			// simultaneously
-
-			// inserts the new tag or increments the number of occurrences if it's not a new
-			// tag
-			String key = "#" + hashtag;
-			if (hashtagOccurrenceMap.containsKey(key)) {
-				hashtagOccurrenceMap.replace(key, 1 + hashtagOccurrenceMap.get(key));
-			} else {
-				hashtagOccurrenceMap.put(key, 1);
+					
 			}
-
-			// sorts by number of occurrences and keeps only the top ones
-			Map<String, Integer> topHashtagsMap = hashtagOccurrenceMap.entrySet().stream()
-					.sorted(Collections.reverseOrder(Map.Entry.comparingByValue())).limit(nbLeaders)
-					.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-
-			// notifies the subscribers
-			if (previousLeaderMap == null || !previousLeaderMap.equals(topHashtagsMap)) {
-				for (Subscriber<? super Map<String, Integer>> s : subscribers) {
-					s.onNext(topHashtagsMap);
-				}
-				previousLeaderMap = topHashtagsMap;
-			}
-			// else the top list is not changed, no need to re-publish it
+		}
+		} catch (Exception e) {
+			System.out.println("something went wrong... " + e.getMessage());
+		} finally {
+			consumer.close();
 		}
 	}
+	
+	private Properties configureKafkaConsumer(String bootstrapServers) {
+		Properties consumerProperties = new Properties();
 
-	@Override
-	public void onSubscribe(Subscription subscription) {
-		// TODO Auto-generated method stub
-	}
+		consumerProperties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+		consumerProperties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG,
+				org.apache.kafka.common.serialization.VoidDeserializer.class.getName());
+		consumerProperties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG,
+				org.apache.kafka.common.serialization.StringDeserializer.class.getName());
+		consumerProperties.put(ConsumerConfig.GROUP_ID_CONFIG, "the_extractors");
+		consumerProperties.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest"); // from beginning
 
-	@Override
-	public void onError(Throwable throwable) {
-		// TODO Auto-generated method stub
-	}
-
-	@Override
-	public void onComplete() {
-		// TODO Auto-generated method stub
+		return consumerProperties;
 	}
 }
