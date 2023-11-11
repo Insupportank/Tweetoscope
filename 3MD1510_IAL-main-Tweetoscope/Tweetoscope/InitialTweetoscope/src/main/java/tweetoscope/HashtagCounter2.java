@@ -16,16 +16,41 @@ along with this program. If not, see <https://www.gnu.org/licenses/>
  */
 package tweetoscope;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Flow.Publisher;
-import java.util.concurrent.Flow.Subscriber;
-import java.util.concurrent.Flow.Subscription;
+import java.util.Properties;
 import java.util.stream.Collectors;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.stream.Stream;
 
+import javax.swing.BorderFactory;
+import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
+
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.AxisLocation;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.data.category.DefaultCategoryDataset;
+import org.apache.kafka.clients.consumer.ConsumerConfig;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.apache.kafka.clients.consumer.ConsumerRecords;
+import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.apache.kafka.clients.producer.ProducerConfig;
+import org.apache.kafka.clients.producer.ProducerRecord;
+import org.jfree.data.category.DefaultCategoryDataset;
+
+import com.twitter.clientlib.model.Tweet;
+
+import tweetoscope.serialization.TweetDeserializer;
 /**
  * 
  * Reacts to the reception of a new hashtag by updating how many times it has
@@ -40,17 +65,24 @@ import java.util.stream.Collectors;
  * @author Virginie Galtier
  *
  */
-public class HashtagCounter2 implements Subscriber<String>, Publisher<Map<String, Integer>> {
-	/**
-	 * List of objects to notify when the map is updated (downstream component =
-	 * Visualizor)
-	 */
-	protected List<Subscriber<? super Map<String, Integer>>> subscribers;
-
+public class HashtagCounter2 extends JFrame{
 	/**
 	 * Number of lines to include on the leader board
 	 */
 	protected int nbLeaders;
+	
+	/**
+	 * Dataset organized with a single row (key = {@code ROW_KEY}), and one column
+	 * per hashtag. The column key is the hashtag text, the value stored at
+	 * dataset(row:KEY_ROW, col: hashtag) is the number of occurrences of the
+	 * hashtag.
+	 */
+	protected DefaultCategoryDataset dataset;
+	/**
+	 * Key of the single row of the {@code dataset} that contains the occurrences of
+	 * hashtags
+	 */
+	protected final static String ROW_KEY = "hashtag";
 
 	/**
 	 * Map <Hashtag text - number of occurrences>
@@ -67,62 +99,92 @@ public class HashtagCounter2 implements Subscriber<String>, Publisher<Map<String
 	 * 
 	 * @param nbLeaders number of hashtags to include on the leader board
 	 */
-	public HashtagCounter2(int nbLeader) {
+	public static void main(String[] arg) {
+		new HashtagCounter2(Integer.parseInt(arg[0]), arg[1], arg[2]);
+	}
+	
+	public HashtagCounter2(int nbLeader, String bootstrapServers, String inputTopicName) {
 		this.nbLeaders = nbLeader;
+		KafkaConsumer<Void, String> consumer = new KafkaConsumer<Void, String>(
+				configureKafkaConsumer(bootstrapServers));
+		consumer.subscribe(Collections.singletonList(inputTopicName));
 		hashtagOccurrenceMap = new HashMap<String, Integer>();
+		dataset = new DefaultCategoryDataset();
 
-		subscribers = new ArrayList<Subscriber<? super Map<String, Integer>>>();
-	}
+		JFreeChart chart = ChartFactory.createBarChart("Most Popular Hashtags", // title
+				"", // category axis label
+				"number of occurences", // value axis label
+				dataset, // category dataset
+				PlotOrientation.HORIZONTAL, // orientation
+				false, // legend
+				true, // tooltips
+				false); // urls
+		chart.getCategoryPlot().setRangeAxisLocation(AxisLocation.BOTTOM_OR_RIGHT);
+		chart.getCategoryPlot().setDomainAxisLocation(AxisLocation.BOTTOM_OR_RIGHT);
+		ChartPanel chartPanel = new ChartPanel(chart);
+		chartPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+		chartPanel.setBackground(Color.white);
+		chartPanel.setPreferredSize(new Dimension(500, 300));
+		this.add(chartPanel);
 
-	public void subscribe(Subscriber<? super Map<String, Integer>> subscriber) {
-		subscribers.add(subscriber);
-	}
+		this.pack();
+		this.setTitle("Tweetoscope");
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setVisible(true);
+		try {
+			Duration timeout = Duration.ofMillis(1000);
+			while (true) {
+				// reads events
+				ConsumerRecords<Void, String> hashtags = consumer.poll(timeout);
+				for (ConsumerRecord<Void, String> hashtagObj : hashtags) {
+					String hashtag = hashtagObj.value();
+					String key = "#" + hashtag;
+					if (hashtagOccurrenceMap.containsKey(key)) {
+						hashtagOccurrenceMap.replace(key, 1 + hashtagOccurrenceMap.get(key));
+					} else {
+						hashtagOccurrenceMap.put(key, 1);
+					}
 
-	/**
-	 * Triggered by the reception of a new hashtag from a TweetFilter via Java Flow.
-	 */
-	public void onNext(String hashtag) {
-		synchronized (hashtagOccurrenceMap) {
-			// avoid ConcurrentModificationException when multiple sources are used
-			// simultaneously
+					// sorts by number of occurrences and keeps only the top ones
+					Map<String, Integer> topHashtagsMap = hashtagOccurrenceMap.entrySet().stream()
+							.sorted(Collections.reverseOrder(Map.Entry.comparingByValue())).limit(nbLeaders)
+							.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+					
+					if (previousLeaderMap == null || !previousLeaderMap.equals(topHashtagsMap)) {
+						Stream<Entry<String, Integer>> sortedTopHashtags = topHashtagsMap.entrySet().stream()
+								.sorted(Collections.reverseOrder(Map.Entry.comparingByValue()));
+						sortedTopHashtags.forEach(t -> {
+							dataset.setValue(t.getValue(), ROW_KEY, t.getKey().toString());
+						});
+						// adds padding, if necessary (if we have not yet observed as many hashtags as
+						// expected for the leader board
+						for (int i = topHashtagsMap.entrySet().size(); i < nbLeaders; i++) {
+							dataset.setValue(0, ROW_KEY, "");
+						}
+						previousLeaderMap = topHashtagsMap;
+					}
 
-			// inserts the new tag or increments the number of occurrences if it's not a new
-			// tag
-			String key = "#" + hashtag;
-			if (hashtagOccurrenceMap.containsKey(key)) {
-				hashtagOccurrenceMap.replace(key, 1 + hashtagOccurrenceMap.get(key));
-			} else {
-				hashtagOccurrenceMap.put(key, 1);
+					
 			}
-
-			// sorts by number of occurrences and keeps only the top ones
-			Map<String, Integer> topHashtagsMap = hashtagOccurrenceMap.entrySet().stream()
-					.sorted(Collections.reverseOrder(Map.Entry.comparingByValue())).limit(nbLeaders)
-					.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-
-			// notifies the subscribers
-			if (previousLeaderMap == null || !previousLeaderMap.equals(topHashtagsMap)) {
-				for (Subscriber<? super Map<String, Integer>> s : subscribers) {
-					s.onNext(topHashtagsMap);
-				}
-				previousLeaderMap = topHashtagsMap;
-			}
-			// else the top list is not changed, no need to re-publish it
+		}
+		} catch (Exception e) {
+			System.out.println("something went wrong... " + e.getMessage());
+		} finally {
+			consumer.close();
 		}
 	}
+	
+	private Properties configureKafkaConsumer(String bootstrapServers) {
+		Properties consumerProperties = new Properties();
 
-	@Override
-	public void onSubscribe(Subscription subscription) {
-		// TODO Auto-generated method stub
-	}
+		consumerProperties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+		consumerProperties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG,
+				org.apache.kafka.common.serialization.VoidDeserializer.class.getName());
+		consumerProperties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG,
+				org.apache.kafka.common.serialization.StringDeserializer.class.getName());
+		consumerProperties.put(ConsumerConfig.GROUP_ID_CONFIG, "the_extractors");
+		consumerProperties.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest"); // from beginning
 
-	@Override
-	public void onError(Throwable throwable) {
-		// TODO Auto-generated method stub
-	}
-
-	@Override
-	public void onComplete() {
-		// TODO Auto-generated method stub
+		return consumerProperties;
 	}
 }

@@ -183,6 +183,22 @@
 						</configuration>
 					</execution>
 					
+					<execution>
+						<id>HashtagCounter</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+						<configuration>
+							<finalName>HashtagCounter</finalName>
+							<archive>
+								<manifest>
+									<mainClass>tweetoscope.HashtagCounter2</mainClass>
+								</manifest>
+							</archive>
+						</configuration>
+					</execution>
+					
 				</executions>
 			</plugin>
 		</plugins>
