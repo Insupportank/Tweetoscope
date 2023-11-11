@@ -21,10 +21,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URISyntaxException;
 import java.time.OffsetDateTime;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.apache.http.HttpEntity;
@@ -43,9 +41,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.twitter.clientlib.ApiException;
 import com.twitter.clientlib.api.TweetsApi.APIfindTweetByIdRequest;
-import com.twitter.clientlib.api.TweetsApi.APIfindTweetsByIdRequest;
 import com.twitter.clientlib.model.Get2TweetsIdResponse;
-import com.twitter.clientlib.model.Get2TweetsResponse;
 import com.twitter.clientlib.model.Place;
 import com.twitter.clientlib.model.Tweet;
 

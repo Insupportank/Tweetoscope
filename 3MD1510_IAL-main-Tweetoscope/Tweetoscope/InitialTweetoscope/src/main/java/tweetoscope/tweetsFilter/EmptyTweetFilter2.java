@@ -18,7 +18,6 @@ package tweetoscope.tweetsFilter;
 
 import com.twitter.clientlib.model.Tweet;
 
-import tweetoscope.tweetsProducer.MockTwitterStreamRecorded;
 
 /**
  * Empty Tweet filter: all Tweets are accepted

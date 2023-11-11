@@ -17,22 +17,18 @@ along with this program. If not, see <https://www.gnu.org/licenses/>
 package tweetoscope;
 
 import java.time.Duration;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.stream.Collectors;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Stream;
 
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
-import javax.swing.SwingUtilities;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -45,12 +41,6 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.producer.ProducerConfig;
-import org.apache.kafka.clients.producer.ProducerRecord;
-import org.jfree.data.category.DefaultCategoryDataset;
-
-import com.twitter.clientlib.model.Tweet;
-
-import tweetoscope.serialization.TweetDeserializer;
 /**
  * 
  * Reacts to the reception of a new hashtag by updating how many times it has

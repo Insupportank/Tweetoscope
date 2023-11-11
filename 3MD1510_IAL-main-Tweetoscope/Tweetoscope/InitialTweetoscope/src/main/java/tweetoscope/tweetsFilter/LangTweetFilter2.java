@@ -18,7 +18,6 @@ package tweetoscope.tweetsFilter;
 
 import com.twitter.clientlib.model.Tweet;
 
-import tweetoscope.tweetsProducer.MockTwitterStreamRecorded;
 
 /**
  * Filters Tweets according to the detected language.

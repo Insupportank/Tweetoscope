@@ -33,7 +33,6 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.twitter.clientlib.model.Tweet;
-import tweetoscope.serialization.TweetDeserializer;
 import tweetoscope.serialization.TweetSerializer;
 
 /**

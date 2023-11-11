@@ -45,15 +45,6 @@ import tweetoscope.serialization.TweetDeserializer;
  *
  */
 public class HashtagExtractor2 {
-	private String bootstrapServers;
-	/*
-	 * Name of the source Kafka topic
-	 */
-	private String inputTopicName;
-	/*
-	 * Name of the destination Kafka topic
-	 */
-	private String outputTopicName;
 
 	/**
 	 * Creates a filter element (provoking infinite execution).
@@ -73,9 +64,6 @@ public class HashtagExtractor2 {
 	final Extractor twitterTextExtractor = new Extractor();
 
 	HashtagExtractor2(String bootstrapServers, String inputTopicName, String outputTopicName) {
-		this.bootstrapServers = bootstrapServers;
-		this.inputTopicName = inputTopicName;
-		this.outputTopicName = outputTopicName;
 		
 		KafkaConsumer<Void, Tweet> consumer = new KafkaConsumer<Void, Tweet>(
 				configureKafkaConsumer(bootstrapServers));

@@ -27,8 +27,6 @@ import org.apache.kafka.streams.Topology;
 import org.apache.kafka.streams.kstream.KStream;
 import org.apache.kafka.streams.kstream.Predicate;
 import com.twitter.clientlib.model.Tweet;
-import tweetoscope.serialization.TweetDeserializer;
-import tweetoscope.serialization.TweetSerializer;
 import tweetoscope.serialization.TweetSerdes;
 /**
  * Reacts to the reception of a new Tweet, if the Tweet matches the filter
