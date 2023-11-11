@@ -23,17 +23,30 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.concurrent.Flow.Publisher;
-import java.util.concurrent.Flow.Subscriber;
-import java.util.concurrent.Flow.Subscription;
 import java.util.stream.Collectors;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.stream.Stream;
 
+import javax.swing.BorderFactory;
+import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
+
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.AxisLocation;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.data.category.DefaultCategoryDataset;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
+import org.jfree.data.category.DefaultCategoryDataset;
 
 import com.twitter.clientlib.model.Tweet;
 
@@ -52,11 +65,24 @@ import tweetoscope.serialization.TweetDeserializer;
  * @author Virginie Galtier
  *
  */
-public class HashtagCounter2 {
+public class HashtagCounter2 extends JFrame{
 	/**
 	 * Number of lines to include on the leader board
 	 */
 	protected int nbLeaders;
+	
+	/**
+	 * Dataset organized with a single row (key = {@code ROW_KEY}), and one column
+	 * per hashtag. The column key is the hashtag text, the value stored at
+	 * dataset(row:KEY_ROW, col: hashtag) is the number of occurrences of the
+	 * hashtag.
+	 */
+	protected DefaultCategoryDataset dataset;
+	/**
+	 * Key of the single row of the {@code dataset} that contains the occurrences of
+	 * hashtags
+	 */
+	protected final static String ROW_KEY = "hashtag";
 
 	/**
 	 * Map <Hashtag text - number of occurrences>
@@ -73,13 +99,38 @@ public class HashtagCounter2 {
 	 * 
 	 * @param nbLeaders number of hashtags to include on the leader board
 	 */
+	public static void main(String[] arg) {
+		new HashtagCounter2(Integer.parseInt(arg[0]), arg[1], arg[2]);
+	}
+	
 	public HashtagCounter2(int nbLeader, String bootstrapServers, String inputTopicName) {
 		this.nbLeaders = nbLeader;
 		KafkaConsumer<Void, String> consumer = new KafkaConsumer<Void, String>(
 				configureKafkaConsumer(bootstrapServers));
 		consumer.subscribe(Collections.singletonList(inputTopicName));
 		hashtagOccurrenceMap = new HashMap<String, Integer>();
-		
+		dataset = new DefaultCategoryDataset();
+
+		JFreeChart chart = ChartFactory.createBarChart("Most Popular Hashtags", // title
+				"", // category axis label
+				"number of occurences", // value axis label
+				dataset, // category dataset
+				PlotOrientation.HORIZONTAL, // orientation
+				false, // legend
+				true, // tooltips
+				false); // urls
+		chart.getCategoryPlot().setRangeAxisLocation(AxisLocation.BOTTOM_OR_RIGHT);
+		chart.getCategoryPlot().setDomainAxisLocation(AxisLocation.BOTTOM_OR_RIGHT);
+		ChartPanel chartPanel = new ChartPanel(chart);
+		chartPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+		chartPanel.setBackground(Color.white);
+		chartPanel.setPreferredSize(new Dimension(500, 300));
+		this.add(chartPanel);
+
+		this.pack();
+		this.setTitle("Tweetoscope");
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setVisible(true);
 		try {
 			Duration timeout = Duration.ofMillis(1000);
 			while (true) {
@@ -100,8 +151,16 @@ public class HashtagCounter2 {
 							.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 					
 					if (previousLeaderMap == null || !previousLeaderMap.equals(topHashtagsMap)) {
-						
-						
+						Stream<Entry<String, Integer>> sortedTopHashtags = topHashtagsMap.entrySet().stream()
+								.sorted(Collections.reverseOrder(Map.Entry.comparingByValue()));
+						sortedTopHashtags.forEach(t -> {
+							dataset.setValue(t.getValue(), ROW_KEY, t.getKey().toString());
+						});
+						// adds padding, if necessary (if we have not yet observed as many hashtags as
+						// expected for the leader board
+						for (int i = topHashtagsMap.entrySet().size(); i < nbLeaders; i++) {
+							dataset.setValue(0, ROW_KEY, "");
+						}
 						previousLeaderMap = topHashtagsMap;
 					}
 
