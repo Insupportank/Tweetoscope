@@ -26,11 +26,7 @@ import com.twitter.clientlib.model.Tweet;
  *
  */
 public class EmptyTweetFilter2 extends TweetFilter2 {
-	
-	public static void main(String[] args) {
-		new EmptyTweetFilter2(args[0], args[1], args[2]);
-	}
-	
+		
 	public EmptyTweetFilter2(String bootstrapServers, String inputTopicName, String outputTopicName) {
 		super(bootstrapServers, inputTopicName, outputTopicName);
 		this.run();

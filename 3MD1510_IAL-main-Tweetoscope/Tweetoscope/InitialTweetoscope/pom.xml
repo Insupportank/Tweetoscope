@@ -72,102 +72,38 @@
 				</configuration>
 				<executions>
 					<execution>
-						<id>tweetproducerrandom</id>
+						<id>TweetProducer</id>
 						<phase>package</phase>
 						<goals>
 							<goal>single</goal>
 						</goals>
 						<configuration>
-							<finalName>tweet_producer_random</finalName>
+							<finalName>TweetProducer</finalName>
 							<archive>
 								<manifest>
-									<mainClass>tweetoscope.tweetsProducer.MockTwitterStreamRandom</mainClass>
+									<mainClass>tweetoscope.tweetsProducer.MockLauncher</mainClass>
 								</manifest>
 							</archive>
 						</configuration>
 					</execution>
 					
 					<execution>
-						<id>tweetproducerScenario</id>
+						<id>TweetFilter</id>
 						<phase>package</phase>
 						<goals>
 							<goal>single</goal>
 						</goals>
 						<configuration>
-							<finalName>tweet_producer_scenario</finalName>
+							<finalName>TweetFilter</finalName>
 							<archive>
 								<manifest>
-									<mainClass>tweetoscope.tweetsProducer.MockTwitterStreamScenario</mainClass>
+									<mainClass>tweetoscope.tweetsFilter.FilterLauncher</mainClass>
 								</manifest>
 							</archive>
 						</configuration>
 					</execution>
 					
-					<execution>
-						<id>tweetproducerRecorded</id>
-						<phase>package</phase>
-						<goals>
-							<goal>single</goal>
-						</goals>
-						<configuration>
-							<finalName>tweet_producer_recorded</finalName>
-							<archive>
-								<manifest>
-									<mainClass>tweetoscope.tweetsProducer.MockTwitterStreamRecorded</mainClass>
-								</manifest>
-							</archive>
-						</configuration>
-					</execution>
-					
-					<execution>
-						<id>SizeTweetFilter</id>
-						<phase>package</phase>
-						<goals>
-							<goal>single</goal>
-						</goals>
-						<configuration>
-							<finalName>SizeTweetFilter</finalName>
-							<archive>
-								<manifest>
-									<mainClass>tweetoscope.tweetsFilter.SizeTweetFilter2</mainClass>
-								</manifest>
-							</archive>
-						</configuration>
-					</execution>
-					
-					<execution>
-						<id>EmptyTweetFilter</id>
-						<phase>package</phase>
-						<goals>
-							<goal>single</goal>
-						</goals>
-						<configuration>
-							<finalName>EmptyTweetFilter</finalName>
-							<archive>
-								<manifest>
-									<mainClass>tweetoscope.tweetsFilter.EmptyTweetFilter2</mainClass>
-								</manifest>
-							</archive>
-						</configuration>
-					</execution>
-					
-					<execution>
-						<id>LangTweetFilter</id>
-						<phase>package</phase>
-						<goals>
-							<goal>single</goal>
-						</goals>
-						<configuration>
-							<finalName>LangTweetFilter</finalName>
-							<archive>
-								<manifest>
-									<mainClass>tweetoscope.tweetsFilter.LangTweetFilter2</mainClass>
-								</manifest>
-							</archive>
-						</configuration>
-					</execution>
-					
-					<execution>
+						<execution>
 						<id>HashtagExtractor</id>
 						<phase>package</phase>
 						<goals>

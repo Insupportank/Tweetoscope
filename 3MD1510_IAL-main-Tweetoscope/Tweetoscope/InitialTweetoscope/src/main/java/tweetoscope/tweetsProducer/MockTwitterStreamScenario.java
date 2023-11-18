@@ -55,9 +55,7 @@ public final class MockTwitterStreamScenario extends OfflineTweetsProducer {
 	 * @param args first argument is a list of Kafka bootstrap servers, second
 	 *             argument is the name of the destination Kafka topic
 	 */
-	public static void main(String[] args) {
-		new MockTwitterStreamScenario(args[0], args[1]);
-	}
+
 	
 	/**
 	 * Creates a new MockTwitterStreamScenario.

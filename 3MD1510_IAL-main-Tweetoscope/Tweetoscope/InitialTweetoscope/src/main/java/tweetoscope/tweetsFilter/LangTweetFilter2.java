@@ -38,9 +38,6 @@ public class LangTweetFilter2 extends TweetFilter2 {
 	 * 
 	 * @param language target language to match (example: "en")
 	 */
-	public static void main(String[] args) {
-		new LangTweetFilter2(args[0], args[1], args[2], args[3]);
-	}
 	
 	public LangTweetFilter2(String bootstrapServers, String inputTopicName, String outputTopicName, String language) {
 		super(bootstrapServers, inputTopicName, outputTopicName);
