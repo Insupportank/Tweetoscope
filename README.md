@@ -30,5 +30,9 @@ git stash pop
 
 ## Build and run
 - [ ] Build the pom.xml `mvn -f 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/pom.xml clean package`
-- [ ] Run the .jar file(s) created `java -jar 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/target/tweet_producer_random-jar-with-dependencies.jar localhost:9092,localhost:9093 tweets`
-- [ ] If you run the recorded producer, you need the tweet .txt path : `java -jar 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/target/tweet_producer_recorded-jar-with-dependencies.jar 3MD1510_IAL-main-Tweetoscope/Tweetoscope/TestBases/miniTestBase.txt localhost:9092,localhost:9093 tweets`
+- [ ] Run the producer `java -jar 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/target/TweetProducer-jar-with-dependencies.jar localhost:9092,localhost:9093 tweets name option` with name equals
+to random, recorded or scenario and for recorded, option equals to `3MD1510_IAL-main-Tweetoscope/Tweetoscope/TestBases/miniTestBase.txt`, `3MD1510_IAL-main-Tweetoscope/Tweetoscope/TestBases/scenarioTestBase.txt` or `3MD1510_IAL-main-Tweetoscope/Tweetoscope/TestBases/largeTestBase.txt`
+- [ ] Run the filter `java -jar 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/target/TweetFilter-jar-with-dependencies.jar localhost:9092,localhost:9093 tweets filtered_tweet name option` with name equals
+to empty, size or lang option equals to an int defining the min size for sizeFilter or a string defining the language to filter for the langFilter
+- [ ] Run the hashtag extractor `java -jar 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/target/HashtagExtractor-jar-with-dependencies.jar localhost:9092,localhost:9093 filtered_tweet hashtags`
+- [ ] Run the hashtag counter and visualizor `java -jar 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/target/HashtagExtractor-jar-with-dependencies.jar nbLeaders localhost:9092,localhost:9093 hashtags` with nbLeaders an int equals to the number of hashtags visible on the leaderboard
