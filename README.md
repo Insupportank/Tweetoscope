@@ -1,6 +1,7 @@
 # Tweetoscope23_GROUP-02_BRODERICK_HAZARD_MICHEL
 
 ## Description
+[Link to the official project](https://galtier.pages.centralesupelec.fr/3MD1510_IAL/Tweetoscope/Instructions/tweetoscope.html)
 This project aims to read and use tweets stream.
 
 ## Add your files
@@ -30,9 +31,28 @@ git stash pop
 
 ## Build and run
 - [ ] Build the pom.xml `mvn -f 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/pom.xml clean package`
-- [ ] Run the producer `java -jar 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/target/TweetProducer-jar-with-dependencies.jar localhost:9092,localhost:9093 tweets name option` with name equals
-to random, recorded or scenario and for recorded, option equals to `3MD1510_IAL-main-Tweetoscope/Tweetoscope/TestBases/miniTestBase.txt`, `3MD1510_IAL-main-Tweetoscope/Tweetoscope/TestBases/scenarioTestBase.txt` or `3MD1510_IAL-main-Tweetoscope/Tweetoscope/TestBases/largeTestBase.txt`
-- [ ] Run the filter `java -jar 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/target/TweetFilter-jar-with-dependencies.jar localhost:9092,localhost:9093 tweets filtered_tweet name option` with name equals
-to empty, size or lang option equals to an int defining the min size for sizeFilter or a string defining the language to filter for the langFilter
+- [ ] Run the producer `java -jar 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/target/TweetProducer-jar-with-dependencies.jar localhost:9092,localhost:9093 tweets {producer_name} {recorded_options}`
+    -  with _\{producer\_name}_ equals to :
+        - `random`
+        - `recorded`
+        - `scenario`
+    - and for _\{recorded\_options}_, option equals to : 
+        - `3MD1510_IAL-main-Tweetoscope/Tweetoscope/TestBases/miniTestBase.txt`
+        - `3MD1510_IAL-main-Tweetoscope/Tweetoscope/TestBases/scenarioTestBase.txt`
+        - `3MD1510_IAL-main-Tweetoscope/Tweetoscope/TestBases/largeTestBase.txt`
+- [ ] Run the filter `java -jar 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/target/TweetFilter-jar-with-dependencies.jar localhost:9092,localhost:9093 tweets filtered_tweet {name} {option}` 
+    - with _\{filter\_name}_ equals to :
+        - `empty`
+        - `size`
+        - `lang`
+    - _\{option}_ equals to :
+        - an _int_ defining the min size for **sizeFilter**
+        - a string defining the language to filter for the **langFilter** ()
 - [ ] Run the hashtag extractor `java -jar 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/target/HashtagExtractor-jar-with-dependencies.jar localhost:9092,localhost:9093 filtered_tweet hashtags`
-- [ ] Run the hashtag counter and visualizor `java -jar 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/target/HashtagExtractor-jar-with-dependencies.jar nbLeaders localhost:9092,localhost:9093 hashtags` with nbLeaders an int equals to the number of hashtags visible on the leaderboard
+- [ ] Run the hashtag counter and visualizor `java -jar 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/target/HashtagExtractor-jar-with-dependencies.jar {nbLeaders} localhost:9092,localhost:9093 hashtags` with _{nbLeaders}_ an int equals to the number of hashtags visible on the leaderboard
+
+## CICD
+
+[Here](https://www.youtube.com/watch?v=dQw4w9WgXcQ) is the link to the pdf report.
+
+- [ ] `mvn -f 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/pom.xml clean test jacoco:report` to have the test coverage report in `/target/site/jacoco`
