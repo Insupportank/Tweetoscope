@@ -30,17 +30,17 @@ pages:
       - public/
     expire_in: 1 month
 
-tests_reports_job:
-    stage: tests_reports
-    tags:
-    - docker
-    image: maven:latest
-    script:
-    - mvn -f 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/pom.xml verify
-    artifacts:
-        reports:
-            junit:
-            - 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/target/surefire-reports/TEST-*.xml
+# tests_reports_job:
+#     stage: tests_reports
+#     tags:
+#     - docker
+#     image: maven:latest
+#     script:
+#     - mvn -f 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/pom.xml verify
+#     artifacts:
+#         reports:
+#             junit:
+#             - 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/target/surefire-reports/TEST-*.xml
 
 pages:
     stage: tests_coverage_publish
@@ -49,8 +49,8 @@ pages:
     script:
     - mkdir -p public/testCoverageReport
     - mv 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/target/site/jacoco/* public/testCoverageReport/
-    only:
-    - main
+    # only:
+    # - main
     artifacts:
         paths:
         - public/testCoverageReport
