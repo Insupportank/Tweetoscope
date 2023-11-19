@@ -1,0 +1,20 @@
+version: '3.9'
+
+services:
+  random:
+    build: 
+      context: ./
+      dockerfile: Dockerfile.mock
+  filterCountryCode:
+    build: 
+      context: ./
+      dockerfile: Dockerfile.filter
+  hashtagCounter:
+    build: 
+      context: ./
+      dockerfile: Dockerfile.hashtagCounter
+  hashtagExtractor:
+    build: 
+      context: ./
+      dockerfile: Dockerfile.hashtagExtractor
+
