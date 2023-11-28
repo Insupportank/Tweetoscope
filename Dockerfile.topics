@@ -1,0 +1,4 @@
+FROM wurstmeister/kafka
+COPY topics.sh .
+CMD ./topics.sh
+

@@ -23,7 +23,7 @@ public class SizeTweetFilter2 extends TweetFilter2 {
 	}
 
 	@Override
-	protected boolean match(Tweet tweet) {
+	public boolean match(Tweet tweet) {
 		return tweet.getText().length() >= n;
 	}
 

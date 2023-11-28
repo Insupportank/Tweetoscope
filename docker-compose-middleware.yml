@@ -1,0 +1,20 @@
+version: '3.9'
+
+services:
+  zookeeper:
+    image: zookeeper
+    ports:
+      - "2181:2181"
+
+  kafka-service:
+    image: wurstmeister/kafka
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_CREATE_TOPICS: "tweets:2:2,tweets_filtered:2:2,hashtags:2:2"
+      KAFKA_ZOOKEEPER_CONNECT: "zookeeper:2181"
+      KAFKA_ADVERTISED_HOST_NAME: "kafka-service"
+      KAFKA_ADVERTISED_LISTENERS: "PLAINTEXT://kafka-service:9092"
+

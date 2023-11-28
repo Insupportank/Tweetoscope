@@ -1,0 +1,4 @@
+FROM wurstmeister/kafka:2.13-2.8.1
+CMD kafka-server-start.sh /opt/kafka_2.13-2.8.1/config/server.properties1
+
+
