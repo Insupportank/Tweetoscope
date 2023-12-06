@@ -1,0 +1,44 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: mock-pod
+  namespace: ial-34-ns
+spec:
+  containers:
+  - name: mock-container
+    image: insupportank/mock:latest
+    imagePullPolicy: IfNotPresent
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: filter-pod
+  namespace: ial-34-ns
+spec:
+  containers:
+  - name: filter-container
+    image: insupportank/filter:latest
+    imagePullPolicy: IfNotPresent
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: hashtagextractor-pod
+  namespace: ial-34-ns
+spec:
+  containers:
+  - name: hashtagextractor-container
+    image: insupportank/hashtagextractor:latest
+    imagePullPolicy: IfNotPresent
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: hashtagcounter-pod
+  namespace: ial-34-ns
+spec:
+  containers:
+  - name: hashtagcounter-container
+    image: insupportank/hashtagcounter:latest
+    imagePullPolicy: IfNotPresent
+

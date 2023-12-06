@@ -4,5 +4,5 @@ RUN apk update ; apk add openjdk11
 ARG NBLEADERS
 ENV NBLEADERS $NBLEADERS
 
-COPY 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/target/HashtagExtractor-jar-with-dependencies.jar .
-CMD java -jar HashtagExtractor-jar-with-dependencies.jar $NBLEADERS localhost:9092,localhost:9093 hashtags
+COPY 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/target/HashtagCounter-jar-with-dependencies.jar .
+CMD java -jar HashtagCounter-jar-with-dependencies.jar $NBLEADERS localhost:9092,localhost:9093 hashtags
