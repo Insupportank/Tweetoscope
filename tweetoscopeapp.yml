@@ -8,6 +8,9 @@ spec:
   - name: mock-container
     image: insupportank/mock:latest
     imagePullPolicy: IfNotPresent
+    env:
+    - name: PRODUCER_NAME
+      value: "random"
 ---
 apiVersion: v1
 kind: Pod
@@ -19,6 +22,9 @@ spec:
   - name: filter-container
     image: insupportank/filter:latest
     imagePullPolicy: IfNotPresent
+    env:
+    - name: FILTER_NAME
+      value: "empty"
 ---
 apiVersion: v1
 kind: Pod
@@ -41,4 +47,7 @@ spec:
   - name: hashtagcounter-container
     image: insupportank/hashtagcounter:latest
     imagePullPolicy: IfNotPresent
+    env:
+    - name: NB_LEADERS
+      value: "10"
 

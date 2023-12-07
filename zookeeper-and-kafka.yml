@@ -73,6 +73,14 @@ spec:
       valueFrom:
         fieldRef:
           fieldPath: status.podIP
-    - name: KAFKA_ADVERTISED_LISTENERS        
-      value: "PLAINTEXT://$(POD_IP):9092,PLAINTEXT://$(POD_IP):9093"
+    - name: KAFKA_LISTENER_SECURITY_PROTOCOL_MAP
+      value: "PLAINTEXT:PLAINTEXT,PLAINTEXT2:PLAINTEXT"
+    - name: KAFKA_LISTENER_PLAINTEXT_LISTENER_NAME
+      value: "PLAINTEXT"
+    - name: KAFKA_LISTENER_PLAINTEXT_LISTENER_PORT
+      value: "9092"
+    - name: KAFKA_LISTENER_PLAINTEXT2_LISTENER_NAME
+      value: "PLAINTEXT2"
+    - name: KAFKA_LISTENER_PLAINTEXT2_LISTENER_PORT
+      value: "9093"
 
