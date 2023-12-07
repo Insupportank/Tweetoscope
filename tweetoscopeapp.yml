@@ -48,6 +48,17 @@ spec:
     image: insupportank/hashtagcounter:latest
     imagePullPolicy: IfNotPresent
     env:
-    - name: NB_LEADERS
+    - name: NBLEADERS
       value: "10"
+    securityContext:
+      capabilities:
+        add:
+          - SYS_ADMIN
+    volumeMounts:
+    - name: x11-socket
+      mountPath: /tmp/.X11-unix
+  volumes:
+  - name: x11-socket
+    hostPath:
+      path: /tmp/.X11-unix
 
