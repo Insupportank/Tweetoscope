@@ -49,7 +49,7 @@ git stash pop
         - an _int_ defining the min size for **sizeFilter**
         - a string defining the language to filter for the **langFilter** ()
 - [ ] Run the hashtag extractor `java -jar 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/target/HashtagExtractor-jar-with-dependencies.jar localhost:9092,localhost:9093 filtered_tweet hashtags`
-- [ ] Run the hashtag counter and visualizor `java -jar 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/target/HashtagExtractor-jar-with-dependencies.jar {nbLeaders} localhost:9092,localhost:9093 hashtags` with _{nbLeaders}_ an int equals to the number of hashtags visible on the leaderboard
+- [ ] Run the hashtag counter and visualizor `java -jar 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/target/HashtagCounter-jar-with-dependencies.jar {nbLeaders} localhost:9092,localhost:9093 hashtags` with _{nbLeaders}_ an int equals to the number of hashtags visible on the leaderboard
 
 ## CICD
 

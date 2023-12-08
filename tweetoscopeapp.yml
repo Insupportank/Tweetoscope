@@ -1,0 +1,53 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: mock-pod
+  namespace: ial-34-ns
+spec:
+  containers:
+  - name: mock-container
+    image: insupportank/mockforkubernetes:latest
+    imagePullPolicy: Always
+    env:
+    - name: PRODUCER_NAME
+      value: "random"
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: filter-pod
+  namespace: ial-34-ns
+spec:
+  containers:
+  - name: filter-container
+    image: insupportank/filterforkubernetes:latest
+    imagePullPolicy: Always
+    env:
+    - name: FILTER_NAME
+      value: "empty"
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: hashtagextractor-pod
+  namespace: ial-34-ns
+spec:
+  containers:
+  - name: hashtagextractor-container
+    image: insupportank/hashtagextractorforkubernetes:latest
+    imagePullPolicy: Always
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: hashtagcounter-pod
+  namespace: ial-34-ns
+spec:
+  containers:
+  - name: hashtagcounter-container
+    image: insupportank/hashtagcounterforkubernetes:latest
+    imagePullPolicy: Always
+    env:
+    - name: NBLEADERS
+      value: "10"
+
