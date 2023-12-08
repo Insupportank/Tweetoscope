@@ -5,4 +5,4 @@ ARG NBLEADERS
 ENV NBLEADERS $NBLEADERS
 
 COPY 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/target/HashtagCounterForKubernetes-jar-with-dependencies.jar .
-CMD java -jar HashtagCounterForKubernetes-jar-with-dependencies.jar $NBLEADERS localhost:9092,localhost:9093 hashtags
+CMD java -jar HashtagCounterForKubernetes-jar-with-dependencies.jar $NBLEADERS kafka-service:9092 hashtags

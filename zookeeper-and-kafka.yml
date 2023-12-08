@@ -27,7 +27,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: kafka-service-1
+  name: kafka-service
   namespace: ial-34-ns
 spec:
   selector:
@@ -36,19 +36,6 @@ spec:
   - protocol: TCP
     targetPort: 9092
     port: 9092
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: kafka-service-2
-  namespace: ial-34-ns
-spec:
-  selector:
-    app: kafka-broker
-  ports:
-  - protocol: TCP
-    targetPort: 9093
-    port: 9093
 ---
 apiVersion: v1
 kind: Pod
@@ -73,14 +60,6 @@ spec:
       valueFrom:
         fieldRef:
           fieldPath: status.podIP
-    - name: KAFKA_LISTENER_SECURITY_PROTOCOL_MAP
-      value: "PLAINTEXT:PLAINTEXT,PLAINTEXT2:PLAINTEXT"
-    - name: KAFKA_LISTENER_PLAINTEXT_LISTENER_NAME
-      value: "PLAINTEXT"
-    - name: KAFKA_LISTENER_PLAINTEXT_LISTENER_PORT
-      value: "9092"
-    - name: KAFKA_LISTENER_PLAINTEXT2_LISTENER_NAME
-      value: "PLAINTEXT2"
-    - name: KAFKA_LISTENER_PLAINTEXT2_LISTENER_PORT
-      value: "9093"
+    - name: KAFKA_ADVERTISED_LISTENERS        
+      value: "PLAINTEXT://$(POD_IP):9092"
 

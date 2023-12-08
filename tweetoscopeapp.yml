@@ -6,8 +6,8 @@ metadata:
 spec:
   containers:
   - name: mock-container
-    image: insupportank/mock:latest
-    imagePullPolicy: IfNotPresent
+    image: insupportank/mockforkubernetes:latest
+    imagePullPolicy: Always
     env:
     - name: PRODUCER_NAME
       value: "random"
@@ -20,8 +20,8 @@ metadata:
 spec:
   containers:
   - name: filter-container
-    image: insupportank/filter:latest
-    imagePullPolicy: IfNotPresent
+    image: insupportank/filterforkubernetes:latest
+    imagePullPolicy: Always
     env:
     - name: FILTER_NAME
       value: "empty"
@@ -34,8 +34,8 @@ metadata:
 spec:
   containers:
   - name: hashtagextractor-container
-    image: insupportank/hashtagextractor:latest
-    imagePullPolicy: IfNotPresent
+    image: insupportank/hashtagextractorforkubernetes:latest
+    imagePullPolicy: Always
 ---
 apiVersion: v1
 kind: Pod
@@ -45,8 +45,8 @@ metadata:
 spec:
   containers:
   - name: hashtagcounter-container
-    image: insupportank/hashtagcounter:latest
-    imagePullPolicy: IfNotPresent
+    image: insupportank/hashtagcounterforkubernetes:latest
+    imagePullPolicy: Always
     env:
     - name: NBLEADERS
       value: "10"
