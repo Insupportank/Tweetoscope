@@ -61,7 +61,7 @@ public final class MockTwitterStreamRandom extends OfflineTweetsProducer {
 	public MockTwitterStreamRandom(String bootstrapServers, String topicName) {
 		// Looks like useless but we keep the super
 		super();
-		
+		System.out.println("test");
 		this.bootstrapServers = bootstrapServers;
 		this.topicName = topicName;
 		

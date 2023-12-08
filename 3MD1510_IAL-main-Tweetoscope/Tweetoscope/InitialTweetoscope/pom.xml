@@ -140,6 +140,22 @@
 						</configuration>
 					</execution>
 					
+					<execution>
+						<id>HashtagCounterForKubernetes</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+						<configuration>
+							<finalName>HashtagCounterForKubernetes</finalName>
+							<archive>
+								<manifest>
+									<mainClass>tweetoscope.HashtagCounterForKubernetes</mainClass>
+								</manifest>
+							</archive>
+						</configuration>
+					</execution>
+					
 				</executions>
 			</plugin>
 			
