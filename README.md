@@ -68,3 +68,8 @@ git stash pop
     - [ ] build the hashtag counter `docker build -t hashtagcounter --build-arg NBLEADERS="$(grep '^NBLEADERS=' .env | cut -d '=' -f2)" -f docker_files/Dockerfile.hashtagCounter .`
 - [ ] To run each images:
     - `docker run {--rm} {-it} image`
+
+## Docker Compose builds
+- [ ] Build and run the middleware and services:
+    - [ ] Build and wait a bit so the different topics and lauched `docker compose -f docker-compose-middleware.yml up`
+    - [ ] Build the microprocesses `docker compose -f docker-compose-services.yml up`
