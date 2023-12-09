@@ -1,9 +1,9 @@
 stages:
-    - build_package
-    - upload_jar_artifacts
+    # - build_package
+    # - upload_jar_artifacts
+    - junit_tests
     - pdf_build_test
     - tests_coverage_publish
-    #- unit_tests
 
 build_package_job:
     stage: build_package
@@ -12,54 +12,65 @@ build_package_job:
     image: maven:latest
     script:
     - mvn -f 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/pom.xml clean package
-    - ls 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/target/
-    - mkdir -p jar_artifacts
-    - mv 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/target/TweetProducer-jar-with-dependencies.jar jar_artifacts/
-    - mv 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/target/TweetFilter-jar-with-dependencies.jar jar_artifacts/
-    - mv 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/target/HashtagExtractor-jar-with-dependencies.jar jar_artifacts/
-    - mv 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/target/HashtagCounter-jar-with-dependencies.jar jar_artifacts/
+    # - ls 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/target/
+    # - mkdir -p jar_artifacts
+    # - mv 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/target/TweetProducer-jar-with-dependencies.jar jar_artifacts/
+    # - mv 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/target/TweetFilter-jar-with-dependencies.jar jar_artifacts/
+    # - mv 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/target/HashtagExtractor-jar-with-dependencies.jar jar_artifacts/
+    # - mv 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/target/HashtagCounter-jar-with-dependencies.jar jar_artifacts/
   
-upload_tweet_producer:
-  stage: upload_jar_artifacts
-  dependencies:
-    - build_package_job
-  script:
-    - ls jar_artifacts/
-    - ls 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/target/
-    - echo "Uploading Tweet Producer artifact"
-  artifacts:
-    paths:
-      - jar_artifacts/TweetProducer-jar-with-dependencies.jar
 
-upload_tweet_filter:
-  stage: upload_jar_artifacts
-  dependencies:
-    - build_package_job
-  script:
-    - echo "Uploading Tweet Filter artifact"
-  artifacts:
-    paths:
-      - $CI_PROJECT_DIR/jar_artifacts/TweetFilter-jar-with-dependencies.jar
+# upload_tweet_producer:
+#   stage: upload_jar_artifacts
+#   dependencies:
+#     - build_package_job
+#   script:
+#     - ls jar_artifacts/
+#     - ls 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/target/
+#     - echo "Uploading Tweet Producer artifact"
+#   artifacts:
+#     paths:
+#       - jar_artifacts/TweetProducer-jar-with-dependencies.jar
 
-upload_hashtag_extractor:
-  stage: upload_jar_artifacts
-  dependencies:
-    - build_package_job
-  script:
-    - echo "Uploading Hashtag Extractor artifact"
-  artifacts:
-    paths:
-      - jar_artifacts/HashtagExtractor-jar-with-dependencies.jar
+# upload_tweet_filter:
+#   stage: upload_jar_artifacts
+#   dependencies:
+#     - build_package_job
+#   script:
+#     - echo "Uploading Tweet Filter artifact"
+#   artifacts:
+#     paths:
+#       - $CI_PROJECT_DIR/jar_artifacts/TweetFilter-jar-with-dependencies.jar
 
-upload_hashtag_counter:
-  stage: upload_jar_artifacts
-  dependencies:
-    - build_package_job
-  script:
-    - echo "Uploading Hashtag Counter artifact"
-  artifacts:
-    paths:
-      - jar_artifacts/HashtagCounter-jar-with-dependencies.jar
+# upload_hashtag_extractor:
+#   stage: upload_jar_artifacts
+#   dependencies:
+#     - build_package_job
+#   script:
+#     - echo "Uploading Hashtag Extractor artifact"
+#   artifacts:
+#     paths:
+#       - jar_artifacts/HashtagExtractor-jar-with-dependencies.jar
+
+# upload_hashtag_counter:
+#   stage: upload_jar_artifacts
+#   dependencies:
+#     - build_package_job
+#   script:
+#     - echo "Uploading Hashtag Counter artifact"
+#   artifacts:
+#     paths:
+#       - jar_artifacts/HashtagCounter-jar-with-dependencies.jar
+
+
+unit_test_job:
+    stage: junit_tests
+    tags:
+    - docker
+    image: maven:latest
+    script:
+    - mvn -f 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/pom.xml test
+
 
 pages_pdf:
   stage: pdf_build_test
