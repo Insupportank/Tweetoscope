@@ -1,6 +1,6 @@
-# - build_package
-# - upload_jar_artifacts
 stages:
+    - build_package
+    #- upload_jar_artifacts
     - junit_tests
     - pdf_build_test
     - tests_coverage_publish
@@ -8,7 +8,7 @@ stages:
 build_package_job:
     stage: build_package
     tags:
-    - docker
+      - docker
     image: maven:latest
     script:
     - mvn -f 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/pom.xml clean package
@@ -64,11 +64,11 @@ build_package_job:
 
 
 unit_test_job:
-    stage: junit_tests
-    tags:
+  stage: junit_tests
+  tags:
     - docker
-    image: maven:latest
-    script:
+  image: maven:latest
+  script:
     - mvn -f 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/pom.xml test
 
 
@@ -98,7 +98,7 @@ pages_pdf:
 #             junit:
 #             - 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/target/surefire-reports/TEST-*.xml
 
-pages:
+pages_coverage:
     stage: tests_coverage_publish
     tags:
     - docker
