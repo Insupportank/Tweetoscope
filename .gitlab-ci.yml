@@ -80,7 +80,7 @@ pages_pdf:
     - apt-get update -qy
     - apt-get install -y perl
     - apt-get install -y latexmk
-    - latexmk -pdf -f main.tex
+    - latexmk -pdf -f -interaction=nonstopmode main.tex
     - mv main.pdf public/
   artifacts:
     paths:
