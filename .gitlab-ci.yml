@@ -2,8 +2,9 @@ stages:
     - build_package
     #- upload_jar_artifacts
     - junit_tests
-    - pdf_build_test
+    - tests_reports
     - tests_coverage_publish
+    - pdf_build_test
 
 build_package_job:
     stage: build_package
@@ -86,17 +87,17 @@ pages_pdf:
     paths:
       - public/
 
-# tests_reports_job:
-#     stage: tests_reports
-#     tags:
-#     - docker
-#     image: maven:latest
-#     script:
-#     - mvn -f 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/pom.xml verify
-#     artifacts:
-#         reports:
-#             junit:
-#             - 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/target/surefire-reports/TEST-*.xml
+tests_reports_job:
+    stage: tests_reports
+    tags:
+    - docker
+    image: maven:latest
+    script:
+    - mvn -f 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/pom.xml verify
+    artifacts:
+        reports:
+            junit:
+            - 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/target/surefire-reports/TEST-*.xml
 
 pages_coverage:
     stage: tests_coverage_publish
