@@ -23,7 +23,7 @@ build_package_job:
 upload_tweet_producer:
   stage: upload_jar_artifacts
   dependencies:
-    - build_package_job
+    - build_package
   script:
     - mv 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/target/TweetProducer-jar-with-dependencies.jar tweet_producer.jar
     - echo "Uploading Tweet Producer artifact"
@@ -32,9 +32,9 @@ upload_tweet_producer:
       - jar_artifacts/tweet_producer.jar
 
 upload_tweet_filter:
-  stage: upload_artifacts
+  stage: upload_jar_artifacts
   dependencies:
-    - build_package_job
+    - build_package
   script:
     - mv 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/target/TweetFilter-jar-with-dependencies.jar tweet_filter.jar
     - echo "Uploading Tweet Filter artifact"
@@ -43,9 +43,9 @@ upload_tweet_filter:
       - jar_artifacts/tweet_filter.jar
 
 upload_hashtag_extractor:
-  stage: upload_artifacts
+  stage: upload_jar_artifacts
   dependencies:
-    - build_package_job
+    - build_package
   script:
     - mv 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/target/HashtagExtractor-jar-with-dependencies.jar hashtag_extractor.jar
     - echo "Uploading Hashtag Extractor artifact"
@@ -54,7 +54,7 @@ upload_hashtag_extractor:
       - jar_artifacts/hashtag_extractor.jar
 
 upload_hashtag_counter:
-  stage: upload_artifacts
+  stage: upload_jar_artifacts
   dependencies:
     - build_package_job
   script:
