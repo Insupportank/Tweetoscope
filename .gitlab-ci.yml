@@ -12,6 +12,12 @@ build_package_job:
     image: maven:latest
     script:
     - mvn -f 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/pom.xml clean package
+    - ls 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/target/
+    - mkdir -p jar_artifacts
+    - mv 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/target/TweetProducer-jar-with-dependencies.jar jar_artifacts/
+    - mv 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/target/TweetFilter-jar-with-dependencies.jar jar_artifacts/
+    - mv 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/target/HashtagExtractor-jar-with-dependencies.jar jar_artifacts/
+    - mv 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/target/HashtagCounter-jar-with-dependencies.jar jar_artifacts/
   
 upload_tweet_producer:
   stage: upload_jar_artifacts
@@ -21,7 +27,7 @@ upload_tweet_producer:
     - echo "Uploading Tweet Producer artifact"
   artifacts:
     paths:
-      - 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/target/TweetProducer-jar-with-dependencies.jar
+      - jar_artifacts/TweetProducer-jar-with-dependencies.jar
 
 upload_tweet_filter:
   stage: upload_jar_artifacts
@@ -31,7 +37,7 @@ upload_tweet_filter:
     - echo "Uploading Tweet Filter artifact"
   artifacts:
     paths:
-      - 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/target/TweetFilter-jar-with-dependencies.jar
+      - jar_artifacts/TweetFilter-jar-with-dependencies.jar
 
 upload_hashtag_extractor:
   stage: upload_jar_artifacts
@@ -41,7 +47,7 @@ upload_hashtag_extractor:
     - echo "Uploading Hashtag Extractor artifact"
   artifacts:
     paths:
-      - 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/target/HashtagExtractor-jar-with-dependencies.jar
+      - jar_artifacts/HashtagExtractor-jar-with-dependencies.jar
 
 upload_hashtag_counter:
   stage: upload_jar_artifacts
@@ -51,14 +57,16 @@ upload_hashtag_counter:
     - echo "Uploading Hashtag Counter artifact"
   artifacts:
     paths:
-      - 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/target/HashtagCounter-jar-with-dependencies.jar
+      - jar_artifacts/HashtagCounter-jar-with-dependencies.jar
 
 pages_pdf:
   stage: pdf_build_test
   tags:
     - docker
   script:
-    - mkdir -p public
+    - apt-get update -qy
+    - apt-get install -y perl
+    - apt-get install -y latexmk
     - latexmk -pdf main.tex
     - mv main.pdf public/
   artifacts:
