@@ -1,6 +1,6 @@
+# - build_package
+# - upload_jar_artifacts
 stages:
-    # - build_package
-    # - upload_jar_artifacts
     - junit_tests
     - pdf_build_test
     - tests_coverage_publish
