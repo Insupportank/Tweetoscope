@@ -24,6 +24,8 @@ upload_tweet_producer:
   dependencies:
     - build_package_job
   script:
+    - ls jar_artifacts/
+    - ls 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/target/
     - echo "Uploading Tweet Producer artifact"
   artifacts:
     paths:
@@ -37,7 +39,7 @@ upload_tweet_filter:
     - echo "Uploading Tweet Filter artifact"
   artifacts:
     paths:
-      - jar_artifacts/TweetFilter-jar-with-dependencies.jar
+      - $CI_PROJECT_DIR/jar_artifacts/TweetFilter-jar-with-dependencies.jar
 
 upload_hashtag_extractor:
   stage: upload_jar_artifacts
@@ -67,7 +69,7 @@ pages_pdf:
     - apt-get update -qy
     - apt-get install -y perl
     - apt-get install -y latexmk
-    - latexmk -pdf main.tex
+    - latexmk -pdf -f main.tex
     - mv main.pdf public/
   artifacts:
     paths:
