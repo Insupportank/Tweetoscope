@@ -12,20 +12,12 @@ build_package_job:
     image: maven:latest
     script:
     - mvn -f 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/pom.xml clean package
-    # All 4 .jar files seem to be to big for a job. And I can't find in the gitlab the setting to make it bigger...
-    # artifacts:
-    #     paths:
-    #         - 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/target/TweetProducer-jar-with-dependencies.jar
-    #         - 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/target/TweetFilter-jar-with-dependencies.jar
-    #         - 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/target/HashtagExtractor-jar-with-dependencies.jar
-    #         - 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/target/HashtagCounter-jar-with-dependencies.jar
   
 upload_tweet_producer:
   stage: upload_jar_artifacts
   dependencies:
     - build_package_job
   script:
-    - ls 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/target/
     - echo "Uploading Tweet Producer artifact"
   artifacts:
     paths:
@@ -61,11 +53,12 @@ upload_hashtag_counter:
     paths:
       - 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/target/HashtagCounter-jar-with-dependencies.jar
 
-pages:
+pages_pdf:
   stage: pdf_build_test
   tags:
     - docker
   script:
+    - mkdir -p public
     - latexmk -pdf main.tex
     - mv main.pdf public/
   artifacts:
