@@ -10,10 +10,28 @@
 It may not be a good idea to put the token in the git repository. Indeed even if our repo may not be accessible at first if we put it in private mode, we think it may still be scrapped by people who would try to get some API tokens. However it depends on the reliability of the gitlab private mode: if it is really reliable, it should not be a problem to put the token on gitlab. As our repository is in public, it would necessarily be a bad idea to put the token in the repository.
 
 \section{Architectural Choices}
-\qquad 
-In our architecture, a topic \texttt{Tweets} comes first to gather the tweets using the source file (or the API). Then, we can use a \texttt{consumer group} to filter, first of all, tweets' text. We can also gather further information such as the language in order to filter more precisely the tweets. This way, we gather the filtered tweets in a second topic that we call \texttt{FilteredTweets}. Finally, we use a service to gather the hashtags in a last topic \texttt{hashtags}. Then, we can use a counter like the \texttt{Aggregator} from the first labwork to get the number of occurences of each hashtag.
+\subsection{Global architechture}
+\qquad
+In our architecture, a topic \texttt{Tweets} comes first to gather the tweets using the source file (or the API). Then, we can use a \texttt{consumer group} to filter, first of all, tweets' text. We can also gather further information such as the language in order to filter more precisely the tweets. This way, we gather the filtered tweets in a second topic that we call \texttt{FilteredTweets}. Finally, we use a service to gather the hashtags in a last topic \texttt{hashtags}. Then, we can use a counter like the \texttt{Aggregator} from the first labwork to get the number of occurrences of each hashtag.
 
 \subsection{Structure of the exchanged messages (JSON formatted)}
+\texttt{Tweets} topic:
+\begin{itemize}
+    \item key: \texttt{void}
+    \item value : \texttt{Tweet} object similar to JSON format that contain all data
+\end{itemize}
+
+\texttt{Filtered tweets} topic
+\begin{itemize}
+    \item key: \texttt{void}
+    \item value : \texttt{Tweet} object similar to JSON format that contain all data
+\end{itemize}
+
+\texttt{Filtered tweets} topic
+\begin{itemize}
+    \item key: \texttt{void}
+    \item value : \texttt{String} object containing the hashtag
+\end{itemize}
 
 \section{Risk Analysis}
 \subsection{Initial Risk Analysis}
@@ -23,5 +41,10 @@ If a consumer or a producer lags or crashes, it can cause the application to los
 \subsection{Risk mitigation using Kubernetes}
 \qquad In the end, we only managed to make the project work with one broker when using Kubernetes. We use an infrastructure pod to service similar to the one used in the lab-work 3B. When we kill a pod :TODO. As we only used one broker, it is therefore normal that: TODO.
 
+\section{Conclusion}
+\subsection{Lessons from the project}
+\qquad By completing this project, we learned how the development of a service works from its minimal version to the deployment in production (here on the DCE). We've also learned how to use Kafka, Docker and Kubernetes and how to do continuous integration with git. What's more, we've learned how to cope with difficulties to went in front and that we will detail in the next section.
+\subsection{The difficulties}
+\qquad The first difficulty that we had was how to exploit Kafka to change the structure of the service and especially the understanding of the serializers and deserializers to send and get the tweets in the topics. Then there were about the same difficulties between Docker and Kubernetes : no graphical interface for the visualisor, problems when trying to use 2 brokers and difficulties to use environment variables.
 
 \end{document}
