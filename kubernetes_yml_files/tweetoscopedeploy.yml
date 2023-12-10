@@ -4,7 +4,7 @@ metadata:
   name: mock-deployment
   namespace: ial-34-ns
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: mock
@@ -28,7 +28,7 @@ metadata:
   name: filter-deployment
   namespace: ial-34-ns
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: filter
@@ -52,7 +52,7 @@ metadata:
   name: hashtagextractor-deployment
   namespace: ial-34-ns
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: hashtagextractor
@@ -73,7 +73,7 @@ metadata:
   name: hashtagcounter-deployment
   namespace: ial-34-ns
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: hashtagcounter
