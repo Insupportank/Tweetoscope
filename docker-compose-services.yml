@@ -1,20 +1,31 @@
 version: '3.9'
 
 services:
-  random:
+  mock:
     build: 
       context: ./
-      dockerfile: Dockerfile.mock
-  filterCountryCode:
+      dockerfile: docker_files/Dockerfile.mockForKubernetes
+    environment:
+        - PRODUCER_NAME=$PRODUCER_NAME
+        - RECORDED_OPTION=$RECORDED_OPTION
+
+  filter:
+    build:
+      context: ./
+      dockerfile: docker_files/Dockerfile.filterForKubernetes
+    environment:
+      - FILTER_NAME=$FILTER_NAME
+      - FILTER_OPTION=$FILTER_OPTION
+      
+  hashtag-counter:
     build: 
       context: ./
-      dockerfile: Dockerfile.filter
-  hashtagCounter:
+      dockerfile: docker_files/Dockerfile.hashtagCounterForKubernetes
+    environment:
+      - NBLEADERS=$NBLEADERS
+
+  hashtag-extractor:
     build: 
       context: ./
-      dockerfile: Dockerfile.hashtagCounter
-  hashtagExtractor:
-    build: 
-      context: ./
-      dockerfile: Dockerfile.hashtagExtractor
+      dockerfile: docker_files/Dockerfile.hashtagExtractorForKubernetes
 

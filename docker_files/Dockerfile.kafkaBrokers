@@ -1,6 +1,6 @@
 FROM wurstmeister/kafka:2.13-2.8.1
-ARG broker_id
-ENV broker_id $broker_id
-ARG listener_port
-ENV listener_port $listener_port
-CMD kafka-server-start.sh /opt/kafka_2.13-2.8.1/config/server.properties --override broker.id=$broker_id --override listeners=PLAINTEXT://:$listener_port
+ARG BROKER_ID
+ENV BROKER_ID $BROKER_ID
+ARG LISTENER_PORT
+ENV LISTENER_PORT $LISTENER_PORT
+CMD kafka-server-start.sh /opt/kafka_2.13-2.8.1/config/server.properties --override broker.id=$BROKER_ID --override listeners=PLAINTEXT://:$LISTENER_PORT
