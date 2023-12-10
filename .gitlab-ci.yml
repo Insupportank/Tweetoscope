@@ -81,7 +81,7 @@ pages_pdf:
     - apt-get install -y perl
     - apt-get install -y latexmk
     - latexmk -pdf -f -interaction=nonstopmode main.tex
-    - mkder -p public/MainReport
+    - mkdir -p public/MainReport
     - mv main.pdf public/MainReport
   artifacts:
     paths:
