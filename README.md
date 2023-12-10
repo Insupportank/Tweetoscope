@@ -53,7 +53,7 @@ git stash pop
 
 ## CICD
 
-[Here](https://www.youtube.com/watch?v=dQw4w9WgXcQ) is the link to the pdf report.
+[Here](https://julien.michel.pages-student.centralesupelec.fr/tweetoscope23_group-02_broderick_hazard_michel) is the link to the pdf report.
 
 - [ ] `mvn -f 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/pom.xml clean test jacoco:report` to have the test coverage report in `/target/site/jacoco`
 

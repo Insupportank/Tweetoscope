@@ -1,10 +1,10 @@
 stages:
-    #- upload_jar_artifacts
-    - junit_tests
-    - tests_coverage_publish
-    - deploy_pages
+    #- junit_tests
+    #- tests_coverage_publish
+    #- deploy_pages
     - build_package
-    - create_docker_images
+    - upload_jar_artifacts
+    #- create_docker_images
 
 build_package_job:
     stage: build_package
@@ -13,108 +13,108 @@ build_package_job:
     image: maven:latest
     script:
     - mvn -f 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/pom.xml clean package
-    # - ls 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/target/
-    # - mkdir -p jar_artifacts
-    # - mv 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/target/TweetProducer-jar-with-dependencies.jar jar_artifacts/
-    # - mv 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/target/TweetFilter-jar-with-dependencies.jar jar_artifacts/
-    # - mv 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/target/HashtagExtractor-jar-with-dependencies.jar jar_artifacts/
-    # - mv 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/target/HashtagCounter-jar-with-dependencies.jar jar_artifacts/
+    - ls 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/target/
+    - mkdir -p jar_artifacts
+    - mv 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/target/TweetProducer-jar-with-dependencies.jar jar_artifacts/
+    - mv 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/target/TweetFilter-jar-with-dependencies.jar jar_artifacts/
+    - mv 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/target/HashtagExtractor-jar-with-dependencies.jar jar_artifacts/
+    - mv 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/target/HashtagCounter-jar-with-dependencies.jar jar_artifacts/
   
 
-# upload_tweet_producer:
-#   stage: upload_jar_artifacts
-#   dependencies:
-#     - build_package_job
-#   script:
-#     - ls jar_artifacts/
-#     - ls 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/target/
-#     - echo "Uploading Tweet Producer artifact"
-#   artifacts:
-#     paths:
-#       - jar_artifacts/TweetProducer-jar-with-dependencies.jar
-
-# upload_tweet_filter:
-#   stage: upload_jar_artifacts
-#   dependencies:
-#     - build_package_job
-#   script:
-#     - echo "Uploading Tweet Filter artifact"
-#   artifacts:
-#     paths:
-#       - $CI_PROJECT_DIR/jar_artifacts/TweetFilter-jar-with-dependencies.jar
-
-# upload_hashtag_extractor:
-#   stage: upload_jar_artifacts
-#   dependencies:
-#     - build_package_job
-#   script:
-#     - echo "Uploading Hashtag Extractor artifact"
-#   artifacts:
-#     paths:
-#       - jar_artifacts/HashtagExtractor-jar-with-dependencies.jar
-
-# upload_hashtag_counter:
-#   stage: upload_jar_artifacts
-#   dependencies:
-#     - build_package_job
-#   script:
-#     - echo "Uploading Hashtag Counter artifact"
-#   artifacts:
-#     paths:
-#       - jar_artifacts/HashtagCounter-jar-with-dependencies.jar
-
-
-unit_test_job:
-  stage: junit_tests
-  tags:
-    - docker
-  image: maven:latest
+upload_tweet_producer:
+  stage: upload_jar_artifacts
+  dependencies:
+    - build_package_job
   script:
-    - mvn -f 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/pom.xml test
-
-
-pages:
-  stage: deploy_pages
-  tags:
-    - docker
-  script:
-    - apt-get update -qy
-    - apt-get install -y perl
-    - apt-get install -y latexmk
-    - latexmk -pdf -f -interaction=nonstopmode main.tex
-    - mkdir -p public/MainReport
-    - mv main.pdf public/MainReport
+    - ls jar_artifacts/
+    - ls 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/target/
+    - echo "Uploading Tweet Producer artifact"
   artifacts:
     paths:
-      - public/MainReport
+      - jar_artifacts/TweetProducer-jar-with-dependencies.jar
 
-tests_reports_job:
-    stage: tests_coverage_publish
-    tags:
-    - docker
-    image: maven:latest
-    script:
-    - mvn -f 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/pom.xml clean verify jacoco:report
-    artifacts:
-        reports:
-            junit:
-            - 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/target/surefire-reports/TEST-*.xml
-        paths:
-          - 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/target/site/jacoco
+upload_tweet_filter:
+  stage: upload_jar_artifacts
+  dependencies:
+    - build_package_job
+  script:
+    - echo "Uploading Tweet Filter artifact"
+  artifacts:
+    paths:
+      - $CI_PROJECT_DIR/jar_artifacts/TweetFilter-jar-with-dependencies.jar
 
-pages:
-    stage: deploy_pages
-    tags:
-     - docker
-    dependencies:
-      - tests_reports_job
-    script:
-     #- ls -R 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/target
-     - mkdir -p public/testCoverageReport
-     - mv 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/target/site/jacoco/* public/testCoverageReport
-    artifacts:
-        paths:
-        - public/testCoverageReport 
+upload_hashtag_extractor:
+  stage: upload_jar_artifacts
+  dependencies:
+    - build_package_job
+  script:
+    - echo "Uploading Hashtag Extractor artifact"
+  artifacts:
+    paths:
+      - jar_artifacts/HashtagExtractor-jar-with-dependencies.jar
+
+upload_hashtag_counter:
+  stage: upload_jar_artifacts
+  dependencies:
+    - build_package_job
+  script:
+    - echo "Uploading Hashtag Counter artifact"
+  artifacts:
+    paths:
+      - jar_artifacts/HashtagCounter-jar-with-dependencies.jar
+
+
+# unit_test_job:
+#   stage: junit_tests
+#   tags:
+#     - docker
+#   image: maven:latest
+#   script:
+#     - mvn -f 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/pom.xml test
+
+
+# pages:
+#   stage: deploy_pages
+#   tags:
+#     - docker
+#   script:
+#     - apt-get update -qy
+#     - apt-get install -y perl
+#     - apt-get install -y latexmk
+#     - latexmk -pdf -f -interaction=nonstopmode main.tex
+#     - mkdir -p public/MainReport
+#     - mv main.pdf public/MainReport
+#   artifacts:
+#     paths:
+#       - public/MainReport
+
+# tests_reports_job:
+#     stage: tests_coverage_publish
+#     tags:
+#     - docker
+#     image: maven:latest
+#     script:
+#     - mvn -f 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/pom.xml clean verify jacoco:report
+#     artifacts:
+#         reports:
+#             junit:
+#             - 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/target/surefire-reports/TEST-*.xml
+#         paths:
+#           - 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/target/site/jacoco
+
+# pages:
+#     stage: deploy_pages
+#     tags:
+#      - docker
+#     dependencies:
+#       - tests_reports_job
+#     script:
+#      #- ls -R 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/target
+#      - mkdir -p public/testCoverageReport
+#      - mv 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/target/site/jacoco/* public/testCoverageReport
+#     artifacts:
+#         paths:
+#         - public/testCoverageReport 
 
 create_proxy_docker_image_job:
     stage: create_docker_images
@@ -124,7 +124,9 @@ create_proxy_docker_image_job:
         name: gcr.io/kaniko-project/executor:v1.9.0-debug
         entrypoint: [""]
     script:
-    - /kaniko/executor --context "${CI_PROJECT_DIR}" --dockerfile "${CI_PROJECT_DIR}/docker_files/Dockerfile.filterForKubernetes" --destination "${CI_REGISTRY}/julien.michel/tweetoscope23_group-02_broderick_hazard_michel/filterforkubernetes:latest" --cleanup
-    - /kaniko/executor --context "${CI_PROJECT_DIR}" --dockerfile "${CI_PROJECT_DIR}/docker_files/Dockerfile.hashtagCounterForKubernetes" --destination "${CI_REGISTRY}/julien.michel/tweetoscope23_group-02_broderick_hazard_michel/hashtagcounterforkubernetes:latest" --cleanup
-    - /kaniko/executor --context "${CI_PROJECT_DIR}" --dockerfile "${CI_PROJECT_DIR}/docker_files/Dockerfile.hashtagExtractorForKubernetes" --destination "${CI_REGISTRY}/julien.michel/tweetoscope23_group-02_broderick_hazard_michel/hashtagextractorforkubernetes:latest" --cleanup
-    - /kaniko/executor --context "${CI_PROJECT_DIR}" --dockerfile "${CI_PROJECT_DIR}/docker_files/Dockerfile.mockForKubernetes" --destination "${CI_REGISTRY}/julien.michel/tweetoscope23_group-02_broderick_hazard_michel/mockforkubernetes:latest" --cleanup
+    # We didn't find other options than rebuilding the .jar because the .jar are to big to be passed between jobs in the artifacts.
+    - mvn -f 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/pom.xml clean package
+    - /kaniko/executor --context "${CI_PROJECT_DIR}" --dockerfile "docker_files/Dockerfile.filterForKubernetes" --destination "${CI_REGISTRY}/julien.michel/tweetoscope23_group-02_broderick_hazard_michel/filterforkubernetes:latest" --cleanup
+    - /kaniko/executor --context "${CI_PROJECT_DIR}" --dockerfile "docker_files/Dockerfile.hashtagCounterForKubernetes" --destination "${CI_REGISTRY}/julien.michel/tweetoscope23_group-02_broderick_hazard_michel/hashtagcounterforkubernetes:latest" --cleanup
+    - /kaniko/executor --context "${CI_PROJECT_DIR}" --dockerfile "docker_files/Dockerfile.hashtagExtractorForKubernetes" --destination "${CI_REGISTRY}/julien.michel/tweetoscope23_group-02_broderick_hazard_michel/hashtagextractorforkubernetes:latest" --cleanup
+    - /kaniko/executor --context "${CI_PROJECT_DIR}" --dockerfile "docker_files/Dockerfile.mockForKubernetes" --destination "${CI_REGISTRY}/julien.michel/tweetoscope23_group-02_broderick_hazard_michel/mockforkubernetes:latest" --cleanup
