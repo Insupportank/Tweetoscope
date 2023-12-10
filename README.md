@@ -73,3 +73,12 @@ git stash pop
 - [ ] Build and run the middleware and services:
     - [ ] Build and wait a bit so the different topics and lauched `docker compose -f docker-compose-middleware.yml up`
     - [ ] Build the microprocesses `docker compose -f docker-compose-services.yml up`
+
+## Kubernetes
+- [ ] Connect to the sky cluster :
+    - [ ] First connect to chome on the DCE with your usual identifiers
+    - [ ] Then connect to the sky cluster using `ssh ial_34@sky09` (password: paozieuryt)
+- [ ] Launch the tweetoscope:
+    - [ ] First launch zookeeeper and the kafka broker: `kubectl apply -f zookeeper-and-kafka.yml`
+    - [ ] Then launch the tweetoscope's services : `kubectl apply -f tweetoscopedeploy.yml` (you can also use `kubectl apply -f tweetoscopeapp.yml` but prefer the deployement one)
+-[ ] Check the results in the logs of the last `kubectl logs hashtagcounter-deployement...` (or `kubectl logs hashtagcounter-pod` if you launched just the pods)
