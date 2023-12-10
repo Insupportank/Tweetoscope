@@ -1,9 +1,9 @@
 stages:
-    - build_package
     #- upload_jar_artifacts
     - junit_tests
     - tests_reports
     - tests_coverage_publish
+    - build_package
     - pdf_build_test
 
 build_package_job:
@@ -88,26 +88,28 @@ pages_pdf:
       - public/
 
 tests_reports_job:
-    stage: tests_reports
+    stage: tests_coverage_publish
     tags:
     - docker
     image: maven:latest
     script:
-    - mvn -f 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/pom.xml verify
+    - mvn -f 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/pom.xml clean verify jacoco:report
     artifacts:
         reports:
             junit:
             - 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/target/surefire-reports/TEST-*.xml
+        paths:
+          - 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/target/site/jacoco
 
-pages_coverage:
+pages:
     stage: tests_coverage_publish
     tags:
-    - docker
+     - docker
     script:
-    - mkdir -p public/testCoverageReport
-    - mv 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/target/site/jacoco/* public/testCoverageReport/
+     - mkdir -p public/testCoverageReport
+     - mv 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/target/site/jacoco/* public/testCoverageReport/
     # only:
-    # - main
+    #   - main
     artifacts:
         paths:
         - public/testCoverageReport
