@@ -106,7 +106,7 @@ pages:
     tags:
      - docker
     dependencies:
-      - tests_coverage_publish
+      - tests_reports_job
     script:
      - ls -R 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/target
     artifacts:
