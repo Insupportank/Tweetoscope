@@ -106,10 +106,7 @@ pages:
     tags:
      - docker
     script:
-     - mkdir -p public/testCoverageReport
-     - mv 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/target/site/jacoco/* public/testCoverageReport/
-    # only:
-    #   - main
+     - ls -R 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/target
     artifacts:
         paths:
-        - public/testCoverageReport
+        - 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/target/site/jacoco/
