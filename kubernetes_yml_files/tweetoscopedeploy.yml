@@ -1,0 +1,93 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mock-deployment
+  namespace: ial-34-ns
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mock
+  template:
+    metadata:
+      name: mock-pod
+      labels:
+        app: mock
+    spec:
+      containers:
+      - name: mock-container
+        image: insupportank/mockforkubernetes:latest
+        imagePullPolicy: Always
+        env:
+        - name: PRODUCER_NAME
+          value: "random"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: filter-deployment
+  namespace: ial-34-ns
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: filter
+  template:
+    metadata:
+      name: filter-pod
+      labels:
+        app: filter
+    spec:
+      containers:
+      - name: filter-container
+        image: insupportank/filterforkubernetes:latest
+        imagePullPolicy: Always
+        env:
+        - name: FILTER_NAME
+          value: "empty"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hashtagextractor-deployment
+  namespace: ial-34-ns
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hashtagextractor
+  template:
+    metadata:
+      name: hashtagextractor-pod
+      labels: 
+        app: hashtagextractor
+    spec:
+      containers:
+      - name: hashtagextractor-container
+        image: insupportank/hashtagextractorforkubernetes:latest
+        imagePullPolicy: Always
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hashtagcounter-deployment
+  namespace: ial-34-ns
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hashtagcounter
+  template:
+    metadata:
+      name: hashtagcounter-pod
+      labels:
+        app: hashtagcounter
+    spec:
+      containers:
+      - name: hashtagcounter-container
+        image: insupportank/hashtagcounterforkubernetes:latest
+        imagePullPolicy: Always
+        env:
+        - name: NBLEADERS
+          value: "10"
+

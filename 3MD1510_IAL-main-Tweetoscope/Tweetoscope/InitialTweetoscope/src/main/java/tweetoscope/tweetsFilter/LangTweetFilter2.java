@@ -22,7 +22,7 @@ import com.twitter.clientlib.model.Tweet;
 /**
  * Filters Tweets according to the detected language.
  * 
- * @author Virginie Galtier
+ * @author Julien MICHEL
  *
  */
 public class LangTweetFilter2 extends TweetFilter2 {

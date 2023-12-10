@@ -1,6 +1,11 @@
 package tweetoscope.tweetsProducer;
 
-
+/**
+ * Creates a tweet producer based on the arguments input in the command line.
+ * 
+ * @author Julien MICHEL
+ *
+ */
 public class MockLauncher {
 	public static void main(String[] args) {
 		if (args[2].equals("random")){

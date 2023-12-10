@@ -1,3 +1,0 @@
-FROM alpine
-RUN apk update ; apk add openjdk11
-CMD java -jar 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/target/HashtagExtractor-jar-with-dependencies.jar nbLeaders localhost:9092,localhost:9093 hashtags

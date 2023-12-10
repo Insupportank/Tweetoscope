@@ -34,20 +34,19 @@ import com.twitter.twittertext.Extractor;
 import tweetoscope.serialization.TweetDeserializer;
 
 /**
- * Reacts to the reception of a new Tweet by parsing its text to look for
- * hashtags. For each hashtag found, if any, notifies its subscribers. Tweets
- * are received from the upstream component
- * {@link distributed_tweetoscope.tweetsFilter.TweetFilter} via Java Flow.
- * Hashtags are passed downstream to the
- * {@link distributed_tweetoscope.HashtagCounter} via Java Flow.
+ * Reacts to the reception of a new Tweet in the topic filtered_tweet 
+ * by parsing its text to look for hashtags. For each hashtag found, 
+ * if any, send them to the topic hashtags. Tweets
+ * are received from the filtered tweet topics and
+ * hashtags are send to the hashtags topics via Kstream
  * 
- * @author Virginie Galtier
+ * @author Julien MICHEL
  *
  */
 public class HashtagExtractor2 {
 
 	/**
-	 * Creates a filter element (provoking infinite execution).
+	 * Creates a hashtagExtractor element (provoking infinite execution).
 	 * 
 	 * @param arg first argument is a list of Kafka bootstrap servers, second
 	 *            argument is the name of the source Kafka topic, third argument is

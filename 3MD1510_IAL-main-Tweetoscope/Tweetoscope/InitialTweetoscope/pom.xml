@@ -140,6 +140,43 @@
 						</configuration>
 					</execution>
 					
+					<execution>
+						<id>HashtagCounterForKubernetes</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+						<configuration>
+							<finalName>HashtagCounterForKubernetes</finalName>
+							<archive>
+								<manifest>
+									<mainClass>tweetoscope.HashtagCounterForKubernetes</mainClass>
+								</manifest>
+							</archive>
+						</configuration>
+					</execution>
+					
+				</executions>
+			</plugin>
+			
+			<plugin>
+				<!-- https://mvnrepository.com/artifact/org.jacoco/jacoco-maven-plugin -->
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>0.8.8</version>
+				<executions>
+					<execution>
+						<id>default-prepare-agent</id>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>default-report</id>
+						<goals>
+							<goal>report</goal>
+						</goals>
+					</execution>
 				</executions>
 			</plugin>
 		</plugins>

@@ -1,0 +1,12 @@
+FROM alpine
+RUN apk update ; apk add openjdk11
+
+COPY 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/target/TweetProducer-jar-with-dependencies.jar .
+
+ARG PRODUCER_NAME
+ARG RECORDED_OPTION
+
+ENV PRODUCER_NAME $PRODUCER_NAME
+ENV RECORDED_OPTION $RECORDED_OPTION
+
+CMD java -jar TweetProducer-jar-with-dependencies.jar localhost:9092,localhost:9093 tweets $PRODUCER_NAME $RECORDED_OPTION

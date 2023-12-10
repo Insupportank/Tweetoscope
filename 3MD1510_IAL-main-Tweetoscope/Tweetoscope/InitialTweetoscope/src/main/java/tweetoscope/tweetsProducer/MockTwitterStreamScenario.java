@@ -32,31 +32,22 @@ import com.twitter.clientlib.model.Tweet;
  * Twitter sampled stream rate limit is exceeded for instance. Creates and
  * publishes a predefined set of Tweets.
  * 
- * @author Virginie Galtier
+ * @author Olivier HAZARD
  *
  */
 public final class MockTwitterStreamScenario extends OfflineTweetsProducer {
-	/*
-	 * Kafka producer
-	 */
-	private KafkaProducer<Void, String> kafkaProducer;
-	/*
-	 * List of Kafka bootstrap servers. Example: localhost:9092,another.host:9092
-	 */
-	private String bootstrapServers;
-	/*
-	 * Name of the destination Kafka topic
-	 */
-	private String topicName;
-
 	/**
-	 * Creates the proxy (provoking infinite execution).
-	 * 
-	 * @param args first argument is a list of Kafka bootstrap servers, second
-	 *             argument is the name of the destination Kafka topic
-	 */
-
-	
+	 * Kafka producer to send pre-created tweets to the destination topic
+	 **/
+	private KafkaProducer<Void, String> kafkaProducer;
+	/**
+	 * List of Kafka bootstrap servers. Example: localhost:9092,another.host:9092
+	 **/
+	private String bootstrapServers;
+	/**
+	 * Name of the destination Kafka topic
+	 **/
+	private String topicName;
 	/**
 	 * Creates a new MockTwitterStreamScenario.
 	 * 

@@ -2,6 +2,12 @@ package tweetoscope.tweetsFilter;
 
 import com.twitter.clientlib.model.Tweet;
 
+/**
+ * Size Tweet filter : the Tweet must have a minimal length
+ * 
+ * @author Julien MICHEL
+ *
+ */
 public class SizeTweetFilter extends TweetFilter {
 
 	/**

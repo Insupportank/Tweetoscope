@@ -1,0 +1,12 @@
+FROM alpine
+RUN apk update ; apk add openjdk11
+
+COPY 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/target/TweetFilter-jar-with-dependencies.jar .
+
+ARG FILTER_NAME
+ARG FILTER_OPTION
+
+ENV FILTER_NAME $FILTER_NAME
+ENV FILTER_OPTION $FILTER_OPTION
+
+CMD java -jar TweetFilter-jar-with-dependencies.jar localhost:9092,localhost:9093 tweets filtered_tweet $FILTER_NAME $FILTER_OPTION
