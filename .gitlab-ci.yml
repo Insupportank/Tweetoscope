@@ -4,7 +4,6 @@ stages:
     - tests_coverage_publish
     - deploy_pages
     - build_package
-    - pdf_build_test
 
 build_package_job:
     stage: build_package
@@ -74,7 +73,7 @@ unit_test_job:
 
 
 pages_pdf:
-  stage: pdf_build_test
+  stage: deploy_pages
   tags:
     - docker
   script:
@@ -82,10 +81,11 @@ pages_pdf:
     - apt-get install -y perl
     - apt-get install -y latexmk
     - latexmk -pdf -f -interaction=nonstopmode main.tex
-    - mv main.pdf public/
+    - mkder -p public/MainReport
+    - mv main.pdf public/MainReport
   artifacts:
     paths:
-      - public/
+      - public/MainReport
 
 tests_reports_job:
     stage: tests_coverage_publish
@@ -108,7 +108,9 @@ pages:
     dependencies:
       - tests_reports_job
     script:
-     - ls -R 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/target
+     #- ls -R 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/target
+     - mkdir -p public/testCoverageReport
+     - mv 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/target/site/jacoco/* public/testCoverageReport
     artifacts:
         paths:
-        - 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/target/site/jacoco/
+        - public/testCoverageReport 
