@@ -99,9 +99,9 @@ public class HashtagCounterForKubernetes {
 					if (previousLeaderMap == null || !previousLeaderMap.equals(topHashtagsMap)) {
 						Stream<Entry<String, Integer>> sortedTopHashtags = topHashtagsMap.entrySet().stream()
 								.sorted(Collections.reverseOrder(Map.Entry.comparingByValue()));
+						System.out.println();
+						System.out.println("Last leaderboard");
 						sortedTopHashtags.forEach(t -> {
-							System.out.println();
-							System.out.println("Last leaderboard");
 							System.out.print(t.getKey().toString());
 							System.out.print(": ");
 							System.out.println(t.getValue());
