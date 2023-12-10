@@ -124,7 +124,7 @@ create_proxy_docker_image_job:
         name: gcr.io/kaniko-project/executor:v1.9.0-debug
         entrypoint: [""]
     script:
-    - /kaniko/executor --context "${CI_PROJECT_DIR}" --dockerfile "${CI_PROJECT_DIR}/docker_files/Dockerfile.filterForKubernetes" --destination "${CI_REGISTRY}/julien.michel/tweetoscope23_group-02_broderick_hazard_michel/filterForKubernetes:latest" --cleanup
-    - /kaniko/executor --context "${CI_PROJECT_DIR}" --dockerfile "${CI_PROJECT_DIR}/docker_files/Dockerfile.hashtagCounterForKubernetes" --destination "${CI_REGISTRY}/julien.michel/tweetoscope23_group-02_broderick_hazard_michel/hashtagCounterForKubernetes:latest" --cleanup
-    - /kaniko/executor --context "${CI_PROJECT_DIR}" --dockerfile "${CI_PROJECT_DIR}/docker_files/Dockerfile.hashtagExtractorForKubernetes" --destination "${CI_REGISTRY}/julien.michel/tweetoscope23_group-02_broderick_hazard_michel/hashtagExtractorForKubernetes:latest" --cleanup
-    - /kaniko/executor --context "${CI_PROJECT_DIR}" --dockerfile "${CI_PROJECT_DIR}/docker_files/Dockerfile.mockForKubernetes" --destination "${CI_REGISTRY}/julien.michel/tweetoscope23_group-02_broderick_hazard_michel/mockForKubernetes:latest" --cleanup
+    - /kaniko/executor --context "${CI_PROJECT_DIR}" --dockerfile "${CI_PROJECT_DIR}/docker_files/Dockerfile.filterForKubernetes" --destination "${CI_REGISTRY}/julien.michel/tweetoscope23_group-02_broderick_hazard_michel/filterforkubernetes:latest" --cleanup
+    - /kaniko/executor --context "${CI_PROJECT_DIR}" --dockerfile "${CI_PROJECT_DIR}/docker_files/Dockerfile.hashtagCounterForKubernetes" --destination "${CI_REGISTRY}/julien.michel/tweetoscope23_group-02_broderick_hazard_michel/hashtagcounterforkubernetes:latest" --cleanup
+    - /kaniko/executor --context "${CI_PROJECT_DIR}" --dockerfile "${CI_PROJECT_DIR}/docker_files/Dockerfile.hashtagExtractorForKubernetes" --destination "${CI_REGISTRY}/julien.michel/tweetoscope23_group-02_broderick_hazard_michel/hashtagextractorforkubernetes:latest" --cleanup
+    - /kaniko/executor --context "${CI_PROJECT_DIR}" --dockerfile "${CI_PROJECT_DIR}/docker_files/Dockerfile.mockForKubernetes" --destination "${CI_REGISTRY}/julien.michel/tweetoscope23_group-02_broderick_hazard_michel/mockforkubernetes:latest" --cleanup
