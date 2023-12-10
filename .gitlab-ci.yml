@@ -1,8 +1,8 @@
 stages:
     #- upload_jar_artifacts
     - junit_tests
-    - tests_reports
     - tests_coverage_publish
+    - deploy_pages
     - build_package
     - pdf_build_test
 
@@ -102,9 +102,11 @@ tests_reports_job:
           - 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/target/site/jacoco
 
 pages:
-    stage: tests_coverage_publish
+    stage: deploy_pages
     tags:
      - docker
+    dependencies:
+      - tests_coverage_publish
     script:
      - ls -R 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/target
     artifacts:
