@@ -116,17 +116,17 @@ upload_hashtag_counter:
 #         paths:
 #         - public/testCoverageReport 
 
-create_proxy_docker_image_job:
-    stage: create_docker_images
-    tags:
-        - docker
-    image: 
-        name: gcr.io/kaniko-project/executor:v1.9.0-debug
-        entrypoint: [""]
-    script:
-    # We didn't find other options than rebuilding the .jar because the .jar are to big to be passed between jobs in the artifacts.
-    - mvn -f 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/pom.xml clean package
-    - /kaniko/executor --context "${CI_PROJECT_DIR}" --dockerfile "docker_files/Dockerfile.filterForKubernetes" --destination "${CI_REGISTRY}/julien.michel/tweetoscope23_group-02_broderick_hazard_michel/filterforkubernetes:latest" --cleanup
-    - /kaniko/executor --context "${CI_PROJECT_DIR}" --dockerfile "docker_files/Dockerfile.hashtagCounterForKubernetes" --destination "${CI_REGISTRY}/julien.michel/tweetoscope23_group-02_broderick_hazard_michel/hashtagcounterforkubernetes:latest" --cleanup
-    - /kaniko/executor --context "${CI_PROJECT_DIR}" --dockerfile "docker_files/Dockerfile.hashtagExtractorForKubernetes" --destination "${CI_REGISTRY}/julien.michel/tweetoscope23_group-02_broderick_hazard_michel/hashtagextractorforkubernetes:latest" --cleanup
-    - /kaniko/executor --context "${CI_PROJECT_DIR}" --dockerfile "docker_files/Dockerfile.mockForKubernetes" --destination "${CI_REGISTRY}/julien.michel/tweetoscope23_group-02_broderick_hazard_michel/mockforkubernetes:latest" --cleanup
+# create_proxy_docker_image_job:
+#     stage: create_docker_images
+#     tags:
+#         - docker
+#     image: 
+#         name: gcr.io/kaniko-project/executor:v1.9.0-debug
+#         entrypoint: [""]
+#     script:
+#     # We didn't find other options than rebuilding the .jar because the .jar are to big to be passed between jobs in the artifacts.
+#     - mvn -f 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/pom.xml clean package
+#     - /kaniko/executor --context "${CI_PROJECT_DIR}" --dockerfile "docker_files/Dockerfile.filterForKubernetes" --destination "${CI_REGISTRY}/julien.michel/tweetoscope23_group-02_broderick_hazard_michel/filterforkubernetes:latest" --cleanup
+#     - /kaniko/executor --context "${CI_PROJECT_DIR}" --dockerfile "docker_files/Dockerfile.hashtagCounterForKubernetes" --destination "${CI_REGISTRY}/julien.michel/tweetoscope23_group-02_broderick_hazard_michel/hashtagcounterforkubernetes:latest" --cleanup
+#     - /kaniko/executor --context "${CI_PROJECT_DIR}" --dockerfile "docker_files/Dockerfile.hashtagExtractorForKubernetes" --destination "${CI_REGISTRY}/julien.michel/tweetoscope23_group-02_broderick_hazard_michel/hashtagextractorforkubernetes:latest" --cleanup
+#     - /kaniko/executor --context "${CI_PROJECT_DIR}" --dockerfile "docker_files/Dockerfile.mockForKubernetes" --destination "${CI_REGISTRY}/julien.michel/tweetoscope23_group-02_broderick_hazard_michel/mockforkubernetes:latest" --cleanup
