@@ -3,7 +3,12 @@ package tweetoscope.serialization;
 import org.apache.kafka.common.serialization.Deserializer;
 import com.twitter.clientlib.model.Tweet;
 import com.google.gson.Gson;
-
+/**
+ * Creates a deserializer to listen to tweets in topics.
+ * 
+ * @author Julien MICHEL
+ *
+ */
 public class TweetDeserializer implements Deserializer<Tweet> {
 
 	@Override

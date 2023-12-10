@@ -22,7 +22,7 @@ import com.twitter.clientlib.model.Tweet;
 /**
  * Empty Tweet filter: all Tweets are accepted
  * 
- * @author Virginie Galtier
+ * @author Julien MICHEL
  *
  */
 public class EmptyTweetFilter2 extends TweetFilter2 {

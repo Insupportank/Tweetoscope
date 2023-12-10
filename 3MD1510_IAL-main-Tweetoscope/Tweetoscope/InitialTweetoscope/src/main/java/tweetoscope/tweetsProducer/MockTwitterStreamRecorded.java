@@ -40,7 +40,7 @@ import tweetoscope.serialization.TweetSerializer;
  * Twitter sampled stream rate limit is exceeded for instance. Replays Tweets
  * recorded previously from the Twitter API.
  * 
- * @author Virginie Galtier
+ * @author Olivier HAZARD
  *
  */
 public final class MockTwitterStreamRecorded extends OfflineTweetsProducer {
@@ -48,28 +48,18 @@ public final class MockTwitterStreamRecorded extends OfflineTweetsProducer {
 	 * File that holds the recorded Tweets
 	 */
 	protected String fileName;
-	/*
-	 * Kafka producer
-	 */
-	private KafkaProducer<Void, Tweet> kafkaProducer;
-	/*
-	 * List of Kafka bootstrap servers. Example: localhost:9092,another.host:9092
-	 */
-	private String bootstrapServers;
-	/*
-	 * Name of the destination Kafka topic
-	 */
-	private String topicName;
-
 	/**
-	 * Creates the proxy (provoking infinite execution).
-	 * 
-	 * @param args first argument is a list of Kafka bootstrap servers, second
-	 *             argument is the name of the destination Kafka topic
-	 */
-
-
-
+	 * Kafka producer to send the tweets recorded from a test base to the topic tweets
+	 **/
+	private KafkaProducer<Void, Tweet> kafkaProducer;
+	/**
+	 * List of Kafka bootstrap servers. Example: localhost:9092,another.host:9092
+	 **/
+	private String bootstrapServers;
+	/**
+	 * Name of the destination Kafka topic
+	 **/
+	private String topicName;
 	/**
 	 * Creates a MockTwitterStreamRecorded.
 	 */

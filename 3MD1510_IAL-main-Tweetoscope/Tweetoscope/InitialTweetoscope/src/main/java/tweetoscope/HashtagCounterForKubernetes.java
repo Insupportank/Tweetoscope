@@ -34,15 +34,10 @@ import org.apache.kafka.clients.producer.ProducerConfig;
 /**
  * 
  * Reacts to the reception of a new hashtag by updating how many times it has
- * been seen so far, and sending to its subscribers the updated list of the most
- * popular ones.
+ * been seen so far, and printing in the console.
  * <p>
- * Hashtags are received via Java Flow from the upstream component
- * {@link distributed_tweetoscope.HashtagExtractor}. Downstream component
- * ({@link distributed_tweetoscope.Visualiazor}) is notified of the new leader
- * board data via Java Flow.
- * 
- * @author Virginie Galtier
+ * Hashtags are received via a kafka consummer that listens to the hashtags tpoic
+ * @author Julien MICHEL
  *
  */
 public class HashtagCounterForKubernetes {
