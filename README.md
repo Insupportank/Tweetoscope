@@ -4,6 +4,10 @@
 [Link to the official project](https://galtier.pages.centralesupelec.fr/3MD1510_IAL/Tweetoscope/Instructions/tweetoscope.html)
 This project aims to read and use tweets stream.
 
+## Links
+- [To the video](https://www.youtube.com/watch?v=51x4mPsHWpw)
+- [To the git page](https://julien.michel.pages-student.centralesupelec.fr/tweetoscope23_group-02_broderick_hazard_michel) (jacoco and pdf not functionnal)
+
 ## Add your files
 
 - [ ] Use ssh key `cat ~/.ssh/id_rsa.pub` and paste it in the gitlab student interface.
@@ -51,9 +55,6 @@ git stash pop
 - [ ] Run the hashtag extractor `java -jar 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/target/HashtagExtractor-jar-with-dependencies.jar localhost:9092,localhost:9093 filtered_tweet hashtags`
 - [ ] Run the hashtag counter and visualizor `java -jar 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/target/HashtagCounter-jar-with-dependencies.jar {nbLeaders} localhost:9092,localhost:9093 hashtags` with _{nbLeaders}_ an int equals to the number of hashtags visible on the leaderboard
 
-## CICD
-
-[Here](https://julien.michel.pages-student.centralesupelec.fr/tweetoscope23_group-02_broderick_hazard_michel) is the link to the pdf report.
 
 - [ ] `mvn -f 3MD1510_IAL-main-Tweetoscope/Tweetoscope/InitialTweetoscope/pom.xml clean test jacoco:report` to have the test coverage report in `/target/site/jacoco`
 
