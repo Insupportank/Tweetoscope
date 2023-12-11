@@ -7,7 +7,7 @@
 
 \section{Secret and git}
 \qquad 
-It may not be a good idea to put the token in the git repository. Indeed even if our repo may not be accessible at first if we put it in private mode, we think it may still be scrapped by people who would try to get some API tokens. However it depends on the reliability of the gitlab private mode: if it is really reliable, it should not be a problem to put the token on gitlab. As our repository is in public, it would necessarily be a bad idea to put the token in the repository.
+It may not be a good idea to put the token in the git repository. Indeed even if our repository may not be accessible at first if we put it in private mode, we think it may still be scrapped by people who would try to get some API tokens. However it depends on the reliability of the gitlab private mode: if it is really reliable, it should not be a problem to put the token on gitlab. As our repository is in public, it would necessarily be a bad idea to put the token in the repository.
 
 \section{Architectural Choices}
 \subsection{Global architechture}
@@ -39,7 +39,7 @@ In our architecture, a topic \texttt{Tweets} comes first to gather the tweets us
 
 If a consumer or a producer lags or crashes, it can cause the application to lose data or to slow down.
 \subsection{Risk mitigation using Kubernetes}
-\qquad In the end, we only managed to make the project work with one broker when using Kubernetes. We use an infrastructure pod to service similar to the one used in the lab-work 3B. When we kill a pod :TODO. As we only used one broker, it is therefore normal that: TODO.
+\qquad In the end, we only managed to make the project work with one broker when using Kubernetes. We use an infrastructure pod to service similar to the one used in the lab-work 3B. When we kill a pod in a deployment, it rebuilds itself after a short time. It's the expected behaviour when using deployment and it allows our service to be resilient.
 
 \section{Conclusion}
 \subsection{Lessons from the project}
